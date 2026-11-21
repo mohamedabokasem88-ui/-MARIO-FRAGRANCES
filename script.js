@@ -1,10 +1,25 @@
 // State Management
 let currentLang = 'ar';
 let ownerPassword = localStorage.getItem('mario_owner_password') || 'mario2026';
-let ownerWhatsApp = localStorage.getItem('mario_owner_whatsapp') || '201000000000';
-let vfWallet = localStorage.getItem('mario_vf_wallet') || '01000000000';
+
+// Fixed Owner WhatsApp & Mobile Cash (01279001424)
+const DEFAULT_PHONE = '201279001424';
+let savedWhatsApp = localStorage.getItem('mario_owner_whatsapp');
+if (!savedWhatsApp || savedWhatsApp === '201000000000' || savedWhatsApp === '01000000000') {
+    savedWhatsApp = DEFAULT_PHONE;
+    localStorage.setItem('mario_owner_whatsapp', DEFAULT_PHONE);
+}
+let ownerWhatsApp = savedWhatsApp;
+
+let savedVf = localStorage.getItem('mario_vf_wallet');
+if (!savedVf || savedVf === '01000000000') {
+    savedVf = '01279001424';
+    localStorage.setItem('mario_vf_wallet', '01279001424');
+}
+let vfWallet = savedVf;
+
 let savedHeroTitle = localStorage.getItem('mario_hero_title') || 'اكتشف توقيعك العطري مع MARIO';
-let savedHeroSub = localStorage.getItem('mario_hero_sub') || 'تركيبات عطرية فريدة بثبات عالي وفوحان استثنائي، تصلك لباب بيتك مع الدفع عند الاستلام أو فودافون كاش.';
+let savedHeroSub = localStorage.getItem('mario_hero_sub') || 'تركيبات عطرية فريدة بثبات عالي وفوحان استثنائي، تصلك لباب بيتك مع الدفع عند الاستلام أو كاش.';
 let savedThemeColor = localStorage.getItem('mario_theme_color') || '#D4AF37';
 
 // Apply saved theme color and hero content
@@ -80,19 +95,19 @@ const i18n = {
         btn_add_short: "+ أضف",
         total_lbl: "الإجمالي:",
         lbl_payment_method: "اختر طريقة الدفع:",
-        btn_confirm_order: "تأكيد الطلب وإرسال التفاصيل لواتساب المتجر",
+        btn_confirm_order: "تأكيد الطلب وإرسال الفاتورة لواتساب المتجر",
         chat_btn: "خدمة العملاء (واتساب)",
         admin_title: "لوحة تحكم المالك (Owner Dashboard)",
-        admin_sub: "منطقة محمية: تحكم كامل في المبيعات، المخزون، الأسعار، الصور، وفودافون كاش من داخل الموقع",
+        admin_sub: "منطقة محمية: تحكم كامل في المبيعات، المخزون، الأسعار، الصور، والواتساب من داخل الموقع",
         back_store: "العودة للمتجر ←",
         btn_logout: "تسجيل الخروج",
         stat_sales: "إجمالي المبيعات",
         stat_orders: "عدد الطلبات",
         stat_stock: "إجمالي الزجاجات بالمخزن",
-        ui_customizer_title: "إعدادات المتجر، الواتساب وفودافون كاش",
-        lbl_owner_whatsapp: "رقم واتساب المالك وخدمة العملاء (WhatsApp)",
+        ui_customizer_title: "إعدادات المتجر، الواتساب والمحفظة",
+        lbl_owner_whatsapp: "📱 رقم واتساب المالك لاستقبال الطلبات وخدمة العملاء",
         lbl_owner_pass: "تغيير كلمة مرور المالك (Owner Password)",
-        lbl_vf_wallet: "رقم محفظة فودافون كاش (Vodafone Cash)",
+        lbl_vf_wallet: "رقم محفظة الدفع الإلكتروني كاش (Cash Wallet)",
         lbl_hero_title: "عنوان البنر الرئيسي (عربي)",
         lbl_accent_color: "لون هوية البراند (Accent Color)",
         btn_save_ui: "حفظ الإعدادات والتعديلات",
@@ -125,16 +140,16 @@ const i18n = {
         btn_confirm_order: "Confirm Order & Send to Store WhatsApp",
         chat_btn: "WhatsApp Support",
         admin_title: "Owner Dashboard",
-        admin_sub: "Protected Zone: Full control over sales, inventory, prices, photos, and Vodafone Cash inside the site",
+        admin_sub: "Protected Zone: Full control over sales, inventory, prices, photos, and WhatsApp inside site",
         back_store: "← Back to Store",
         btn_logout: "Logout",
         stat_sales: "Total Revenue",
         stat_orders: "Total Orders",
         stat_stock: "Bottles in Stock",
-        ui_customizer_title: "Storefront, WhatsApp & Vodafone Cash Settings",
+        ui_customizer_title: "Storefront, WhatsApp & Wallet Settings",
         lbl_owner_whatsapp: "Owner & Support WhatsApp Number",
         lbl_owner_pass: "Change Owner Password",
-        lbl_vf_wallet: "Vodafone Cash Wallet Number",
+        lbl_vf_wallet: "Cash Wallet Number",
         lbl_hero_title: "Main Hero Headline",
         lbl_accent_color: "Brand Accent Color",
         btn_save_ui: "Save Settings & Changes",
@@ -151,20 +166,24 @@ const i18n = {
 // Clean & Format WhatsApp Phone Numbers
 function cleanWhatsAppNumber(phone) {
     let num = (phone || '').replace(/\D/g, '');
+    if (num.startsWith('002')) num = num.substring(2);
     if (num.startsWith('01') && num.length === 11) {
         num = '2' + num;
     }
-    return num || '201000000000';
+    return num || '201279001424';
 }
 
-// Redirect Customer Support directly to Owner's WhatsApp
-function openWhatsAppCustomerService(e) {
-    if (e) e.preventDefault();
+// Dynamically bind the floating WhatsApp button directly to the owner's WhatsApp URL
+function updateWhatsAppLinks() {
     const num = cleanWhatsAppNumber(ownerWhatsApp);
     const text = currentLang === 'ar'
-        ? encodeURIComponent('مرحباً متجر MARIO للعطور، أود الاستفسار بخصوص أحد العطور وطلب المساعدة في اختيار العطر المناسب.')
-        : encodeURIComponent('Hello MARIO Perfumes, I would like to ask about your luxury perfumes.');
-    window.open(`https://wa.me/${num}?text=${text}`, '_blank');
+        ? encodeURIComponent('مرحباً متجر MARIO للعطور، أود الاستفسار بخصوص أحد العطور وطلب المساعدة.')
+        : encodeURIComponent('Hello MARIO Perfumes, I would like to inquire about your fragrance collection.');
+    
+    const waBtn = document.getElementById('whatsapp-support-btn');
+    if (waBtn) {
+        waBtn.href = `https://api.whatsapp.com/send?phone=${num}&text=${text}`;
+    }
 }
 
 // Owner Authentication System
@@ -393,7 +412,7 @@ function toggleCart(forceOpen = false) {
     else drawer.classList.toggle('hidden');
 }
 
-// Checkout and Submit Order: Records in Owner Dashboard + Forwards to WhatsApp
+// Checkout and Submit Order: Records in Owner Dashboard + Forwards to WhatsApp (01279001424)
 function submitOrder(e) {
     e.preventDefault();
     if (cart.length === 0) {
@@ -408,7 +427,7 @@ function submitOrder(e) {
     const custAddress = document.getElementById('cust-address').value.trim();
 
     const paymentLabel = method === 'vodafone_cash'
-        ? `فودافون كاش (رقم المحول: ${senderPhone || 'غير مسجل'})`
+        ? `دفع كاش / محفظة إلكترونية (رقم المحول: ${senderPhone || 'غير مسجل'})`
         : 'الدفع عند الاستلام (Cash on Delivery)';
 
     const now = new Date();
@@ -447,7 +466,7 @@ function submitOrder(e) {
     localStorage.setItem('mario_orders', JSON.stringify(orders));
     localStorage.setItem('mario_products', JSON.stringify(products));
 
-    // 2. Prepare WhatsApp Order Message for the Store Owner
+    // 2. Prepare WhatsApp Order Message for the Store Owner (01279001424)
     const itemsDetailText = cart.map(i => `• ${i.name_ar} × ${i.qty} = ${i.price * i.qty} EGP`).join('\n');
     const waOrderMessage = `🛍️ *طلب جديد من متجر MARIO Perfumes*
 ----------------------------------------
@@ -464,10 +483,10 @@ ${itemsDetailText}
 💰 *الإجمالي المستحق:* ${orderTotal} EGP
 💳 *طريقة الدفع:* ${paymentLabel}
 ----------------------------------------
-تم تسجيل الطلب في لوحة المالك بنجاح.`;
+تم تسجيل الطلب في لوحة تحكم المالك بنجاح.`;
 
     const ownerNum = cleanWhatsAppNumber(ownerWhatsApp);
-    const waUrl = `https://wa.me/${ownerNum}?text=${encodeURIComponent(waOrderMessage)}`;
+    const waUrl = `https://api.whatsapp.com/send?phone=${ownerNum}&text=${encodeURIComponent(waOrderMessage)}`;
 
     cart = [];
     saveAndRenderCart();
@@ -478,10 +497,10 @@ ${itemsDetailText}
     handlePaymentChange();
 
     alert(currentLang === 'ar' 
-        ? `تم تسجيل طلبك بنجاح برقم: ${newOrder.id}!\nسيتوجه المتصفح الآن لإرسال نسخة الطلب لواتساب المتجر لتأكيده وشحنه فوراً.` 
-        : `Order Recorded! Order ID: ${newOrder.id}\nOpening WhatsApp to confirm your order with MARIO support.`);
+        ? `تم تسجيل طلبك بنجاح برقم: ${newOrder.id}!\nسيتوجه المتصفح الآن لإرسال تفاصيل الطلب والفاتورة إلى واتساب المتجر.` 
+        : `Order Recorded! Order ID: ${newOrder.id}\nOpening WhatsApp to confirm order with store.`);
 
-    // Automatically open WhatsApp with complete order details
+    // Open WhatsApp
     window.open(waUrl, '_blank');
 }
 
@@ -514,7 +533,7 @@ function updateOrderStatus(orderId, newStatus) {
 function contactCustomerWhatsApp(phone, orderId) {
     const num = cleanWhatsAppNumber(phone);
     const msg = encodeURIComponent(`مرحباً بك من متجر MARIO للعطور! بخصوص طلبك رقم ${orderId}، نود إخبارك بأنه تم استلامه وجاري تجهيزه.`);
-    window.open(`https://wa.me/${num}?text=${msg}`, '_blank');
+    window.open(`https://api.whatsapp.com/send?phone=${num}&text=${msg}`, '_blank');
 }
 
 // Render Admin Dashboard
@@ -541,7 +560,9 @@ function renderAdmin() {
     if (editHeroSub && heroSubDisp) editHeroSub.value = heroSubDisp.innerText;
     if (editVfWallet) editVfWallet.value = vfWallet;
     if (editOwnerPass) editOwnerPass.value = ownerPassword;
-    if (editOwnerWhatsApp) editOwnerWhatsApp.value = ownerWhatsApp;
+    if (editOwnerWhatsApp) editOwnerWhatsApp.value = ownerWhatsApp === '201279001424' ? '01279001424' : ownerWhatsApp;
+
+    updateWhatsAppLinks();
 
     // Render Admin Products Table
     const prodTbody = document.getElementById('admin-products-table');
@@ -717,7 +738,7 @@ function changeThemeColor(hex) {
     document.documentElement.style.setProperty('--primary-gold', hex);
 }
 
-// Save Storefront, WhatsApp, Security & Vodafone Settings
+// Save Storefront, WhatsApp, Security & Wallet Settings
 function saveStoreSettings() {
     const newTitle = document.getElementById('edit-hero-title').value;
     const newSub = document.getElementById('edit-hero-sub').value;
@@ -728,7 +749,7 @@ function saveStoreSettings() {
     if (newWhatsApp) {
         ownerWhatsApp = cleanWhatsAppNumber(newWhatsApp);
         localStorage.setItem('mario_owner_whatsapp', ownerWhatsApp);
-        document.getElementById('edit-owner-whatsapp').value = ownerWhatsApp;
+        document.getElementById('edit-owner-whatsapp').value = ownerWhatsApp.startsWith('20') ? '0' + ownerWhatsApp.substring(2) : ownerWhatsApp;
     }
     if (newPass) {
         ownerPassword = newPass;
@@ -750,7 +771,9 @@ function saveStoreSettings() {
         const vfDisp = document.getElementById('vf-wallet-display');
         if (vfDisp) vfDisp.innerText = vfWallet;
     }
-    alert(currentLang === 'ar' ? 'تم حفظ الإعدادات، رقم الواتساب، كلمة المرور ورقم فودافون كاش!' : 'Settings, WhatsApp number, Owner password, and Vodafone Cash wallet saved!');
+
+    updateWhatsAppLinks();
+    alert(currentLang === 'ar' ? 'تم حفظ الإعدادات، رقم الواتساب، كلمة المرور ورقم المحفظة بنجاح!' : 'Settings, WhatsApp number, Owner password, and Wallet saved successfully!');
 }
 
 // Multi-language Toggle (Arabic / English)
@@ -772,18 +795,20 @@ function toggleLanguage() {
     const heroSubDisplay = document.getElementById('hero-sub-display');
     if (currentLang === 'en') {
         if (heroTitleDisplay) heroTitleDisplay.innerText = "Discover Your Signature Scent with MARIO";
-        if (heroSubDisplay) heroSubDisplay.innerText = "Unique long-lasting luxury fragrances delivered to your doorstep with Cash on Delivery or Vodafone Cash.";
+        if (heroSubDisplay) heroSubDisplay.innerText = "Unique long-lasting luxury fragrances delivered to your doorstep with Cash on Delivery or Mobile Cash.";
     } else {
         if (heroTitleDisplay) heroTitleDisplay.innerText = savedHeroTitle;
         if (heroSubDisplay) heroSubDisplay.innerText = savedHeroSub;
     }
 
+    updateWhatsAppLinks();
     renderProducts();
     saveAndRenderCart();
 }
 
 // Initial Boot
 document.addEventListener('DOMContentLoaded', () => {
+    updateWhatsAppLinks();
     renderProducts();
     saveAndRenderCart();
     handlePaymentChange();

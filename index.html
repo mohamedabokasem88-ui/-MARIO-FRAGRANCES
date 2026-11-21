@@ -52,7 +52,7 @@
                     اكتشف توقيعك العطري مع MARIO
                 </h1>
                 <p id="hero-sub-display" class="text-zinc-400 text-base md:text-lg mb-8 max-w-xl mx-auto">
-                    تركيبات عطرية فريدة بثبات عالي وفوحان استثنائي، تصلك لباب بيتك مع الدفع عند الاستلام أو فودافون كاش.
+                    تركيبات عطرية فريدة بثبات عالي وفوحان استثنائي، تصلك لباب بيتك مع الدفع عند الاستلام أو كاش.
                 </p>
                 <a href="#products-section" class="inline-block gold-bg text-black font-bold px-8 py-3.5 rounded-full hover:opacity-90 transition shadow-lg" data-i18n="hero_cta">
                     تسوق المجموعة الآن
@@ -85,7 +85,7 @@
                     <span>👑</span>
                     <span data-i18n="admin_title">لوحة تحكم المالك (Owner Dashboard)</span>
                 </h1>
-                <p class="text-zinc-400 text-sm" data-i18n="admin_sub">منطقة محمية: تحكم كامل في المبيعات، المخزون، الأسعار، الصور، وفودافون كاش من داخل الموقع</p>
+                <p class="text-zinc-400 text-sm" data-i18n="admin_sub">منطقة محمية: تحكم كامل في المبيعات، المخزون، الأسعار، الصور، والواتساب من داخل الموقع</p>
             </div>
             <div class="flex gap-2 flex-wrap">
                 <button onclick="exportBackup()" class="text-xs bg-emerald-900/50 text-emerald-300 border border-emerald-700 px-3 py-2 rounded-lg hover:bg-emerald-900 transition">
@@ -97,6 +97,18 @@
                     <span data-i18n="btn_logout">تسجيل الخروج</span>
                 </button>
             </div>
+        </div>
+
+        <!-- Connected Number Active Badge -->
+        <div class="mb-8 p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/50 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">✅</span>
+                <div>
+                    <h4 class="font-bold text-emerald-300 text-sm">رقم واتساب المالك متصل ونشط:</h4>
+                    <p class="text-zinc-300 text-xs mt-0.5">تتحول عليه خدمة العملاء وتصلك عليه كافة الطلبات والفواتير: <span class="font-mono text-emerald-200 font-bold tracking-wider">01279001424</span> (+201279001424)</p>
+                </div>
+            </div>
+            <span class="hidden sm:inline-block bg-emerald-900/60 text-emerald-300 text-xs px-3 py-1 rounded-full border border-emerald-600">نشط الآن</span>
         </div>
 
         <!-- Stats -->
@@ -119,22 +131,22 @@
             <!-- Storefront UI Customizer, Security, WhatsApp & Vodafone Cash Settings -->
             <div class="bg-[#1A1A1A] p-6 rounded-2xl border border-zinc-800">
                 <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                    <span>⚙️</span> <span data-i18n="ui_customizer_title">إعدادات المتجر، الواتساب وفودافون كاش</span>
+                    <span>⚙️</span> <span data-i18n="ui_customizer_title">إعدادات المتجر، الواتساب والمحفظة</span>
                 </h3>
                 <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs text-zinc-400 mb-1" data-i18n="lbl_owner_whatsapp">رقم واتساب المالك وخدمة العملاء (WhatsApp)</label>
-                        <input id="edit-owner-whatsapp" type="text" placeholder="مثال: 01012345678 أو 201012345678" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm font-mono">
-                        <span class="text-[10px] text-zinc-500">يصلك عليه كل طلبات العملاء فوراً وتتحول عليه محادثات خدمة العملاء</span>
+                    <div class="p-3 bg-zinc-900/90 rounded-xl border border-[#D4AF37]/40">
+                        <label class="block text-xs text-amber-300 font-bold mb-1" data-i18n="lbl_owner_whatsapp">📱 رقم واتساب المالك لاستقبال الطلبات وخدمة العملاء</label>
+                        <input id="edit-owner-whatsapp" type="text" value="01279001424" placeholder="01279001424" class="w-full bg-black border border-zinc-700 rounded-lg px-3 py-2 text-sm font-mono text-emerald-400 font-bold focus:border-[#D4AF37] outline-none">
+                        <span class="text-[11px] text-zinc-400 mt-1 block">✨ مثبت حالياً على رقمك: <strong>01279001424</strong> ويمكنك تعديله في أي وقت.</span>
                     </div>
                     <div>
                         <label class="block text-xs text-zinc-400 mb-1" data-i18n="lbl_owner_pass">تغيير كلمة مرور المالك (Owner Password)</label>
                         <input id="edit-owner-pass" type="text" placeholder="كلمة المرور الحالية أو جديدة" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm font-mono">
-                        <span class="text-[10px] text-zinc-500">كلمة المرور لحماية لوحة التحكم ومنع الزوار من العبث بها</span>
+                        <span class="text-[10px] text-zinc-500">كلمة المرور لحماية لوحة التحكم (الافتراضية: mario2026)</span>
                     </div>
                     <div>
-                        <label class="block text-xs text-zinc-400 mb-1" data-i18n="lbl_vf_wallet">رقم محفظة فودافون كاش (Vodafone Cash)</label>
-                        <input id="edit-vf-wallet" type="text" placeholder="مثال: 010xxxxxxxx" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm font-mono">
+                        <label class="block text-xs text-zinc-400 mb-1" data-i18n="lbl_vf_wallet">رقم محفظة الدفع الإلكتروني كاش (Cash Wallet)</label>
+                        <input id="edit-vf-wallet" type="text" value="01279001424" placeholder="01279001424" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm font-mono">
                     </div>
                     <div>
                         <label class="block text-xs text-zinc-400 mb-1" data-i18n="lbl_hero_title">عنوان البنر الرئيسي (عربي)</label>
@@ -222,8 +234,8 @@
                     <span>📋</span>
                     <span data-i18n="orders_list_title">الطلبات الواردة من الزبائن (خانة المالك)</span>
                 </h3>
-                <span class="text-xs text-zinc-400 bg-zinc-900 px-3 py-1.5 rounded-lg border border-zinc-800">
-                    كل طلب يقوم به أي زائر يُسجل هنا فوراً، مع إرسال إشعار كامل على واتساب المالك
+                <span class="text-xs text-emerald-400 bg-zinc-900 px-3 py-1.5 rounded-lg border border-zinc-800 font-semibold">
+                    كل طلب يقوم به الزائر يُسجل هنا فوراً، مع إرسال إشعار كامل على واتسابك: 01279001424
                 </span>
             </div>
             <table class="w-full text-sm text-right">
@@ -308,13 +320,13 @@
                         <label class="block text-xs text-zinc-400 mb-1" data-i18n="lbl_payment_method">اختر طريقة الدفع:</label>
                         <select id="payment-method" onchange="handlePaymentChange()" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
                             <option value="cod">الدفع عند الاستلام (Cash on Delivery)</option>
-                            <option value="vodafone_cash">فودافون كاش (Vodafone Cash)</option>
+                            <option value="vodafone_cash">الدفع كاش / فودافون / أورنج كاش</option>
                         </select>
                     </div>
 
                     <div id="vf-cash-box" class="hidden p-3 rounded-xl bg-red-950/30 border border-red-500/40 space-y-2">
                         <p class="text-xs text-red-200 font-semibold">
-                            حول إجمالي المبلغ على محفظة فودافون كاش: <span id="vf-wallet-display" class="font-mono text-white bg-red-900/70 px-2 py-0.5 rounded">01000000000</span>
+                            حول إجمالي المبلغ على محفظة الكاش: <span id="vf-wallet-display" class="font-mono text-white bg-red-900/70 px-2 py-0.5 rounded">01279001424</span>
                         </p>
                         <input id="vf-sender-phone" placeholder="رقم المحفظة المحول منها (اختياري للتأكيد)" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs">
                     </div>
@@ -325,9 +337,9 @@
                     
                     <button type="submit" class="w-full gold-bg text-black font-bold py-3.5 rounded-xl hover:opacity-90 transition mt-2 flex items-center justify-center gap-2 text-sm shadow-lg">
                         <span>🛍️</span>
-                        <span data-i18n="btn_confirm_order">تأكيد الطلب وإرسال التفاصيل لواتساب المتجر</span>
+                        <span data-i18n="btn_confirm_order">تأكيد الطلب وإرسال الفاتورة لواتساب المتجر</span>
                     </button>
-                    <p class="text-[11px] text-zinc-400 text-center mt-1">يتم تسجيل الطلب في لوحة تحكم المالك فوراً وتحويل الفاتورة على الواتساب</p>
+                    <p class="text-[11px] text-zinc-400 text-center mt-1">يتم تسجيل الطلب في لوحة تحكم المالك فوراً وتحويل الفاتورة مباشرة لواتساب 01279001424</p>
                 </form>
             </div>
         </div>
@@ -335,7 +347,7 @@
 
     <!-- DIRECT WHATSAPP CUSTOMER SERVICE FLOATING BUTTON -->
     <div class="fixed bottom-5 right-5 z-40">
-        <a href="#" onclick="openWhatsAppCustomerService(event)" class="whatsapp-btn group flex items-center gap-2.5 bg-[#25D366] hover:bg-[#20bd5a] text-white px-4 py-3 rounded-full shadow-2xl transition duration-300 hover:scale-105 border-2 border-white/20">
+        <a id="whatsapp-support-btn" href="https://api.whatsapp.com/send?phone=201279001424&text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20%D9%85%D8%AA%D8%AC%D8%B1%20MARIO%20%D9%84%D9%84%D8%B9%D8%B7%D9%88%D8%B1%D8%8C%20%D8%A3%D9%88%D8%AF%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%A8%D8%AE%D8%B5%D9%88%D8%B5%20%D8%A3%D8%AD%D8%AF%20%D8%A7%D9%84%D8%B9%D8%B7%D9%88%D8%B1%20%D9%88%D8%B7%D9%84%D8%A8%20%D8%A7%D9%84%D9%85%D8%B3%D8%A7%D8%B9%D8%AF%D8%A9." target="_blank" rel="noopener noreferrer" class="whatsapp-btn group flex items-center gap-2.5 bg-[#25D366] hover:bg-[#20bd5a] text-white px-4 py-3 rounded-full shadow-2xl transition duration-300 hover:scale-105 border-2 border-white/20">
             <!-- WhatsApp Official SVG Icon -->
             <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
                 <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.173.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.086s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.159.57 4.184 1.564 5.946l-1.564 5.882 6.033-1.583c1.701.928 3.65 1.755 5.967 1.755 6.627 0 12-5.373 12-12 0-6.627-5.373-12-12-12z"/>
@@ -347,7 +359,7 @@
     <!-- Footer with English-only Developer Signature -->
     <footer class="border-t border-zinc-800/80 bg-black/60 py-8 px-4 text-center">
         <p class="brand-font text-lg gold-text mb-1 tracking-widest">MARIO PERFUMES</p>
-        <p class="text-zinc-500 text-xs mb-3">© 2026 MARIO. All Rights Reserved. Cash on Delivery & Vodafone Cash Available Across Egypt.</p>
+        <p class="text-zinc-500 text-xs mb-3">© 2026 MARIO. All Rights Reserved. Cash on Delivery & Mobile Cash Available Across Egypt.</p>
         <div dir="ltr" class="inline-block bg-zinc-900/90 border border-zinc-800 px-4 py-1.5 rounded-full text-xs text-zinc-300 tracking-wide">
             Designed & Developed by <span class="gold-text font-bold">Eng. Mohamed Arafat</span>
         </div>
