@@ -71,3 +71,17 @@ tbody tr:hover {
     animation: shakeAnimation 0.4s ease-in-out;
     border-color: #EF4444 !important;
 }
+
+/* WhatsApp Floating Button Subtle Pulse */
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 0 12px rgba(37, 211, 102, 0);
+    }
+}
+
+.whatsapp-btn {
+    animation: pulseGlow 2.5s infinite;
+}

@@ -116,16 +116,21 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Storefront UI Customizer, Security & Vodafone Cash Settings -->
+            <!-- Storefront UI Customizer, Security, WhatsApp & Vodafone Cash Settings -->
             <div class="bg-[#1A1A1A] p-6 rounded-2xl border border-zinc-800">
                 <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                    <span>🎨</span> <span data-i18n="ui_customizer_title">إعدادات المتجر، الأمان وفودافون كاش</span>
+                    <span>⚙️</span> <span data-i18n="ui_customizer_title">إعدادات المتجر، الواتساب وفودافون كاش</span>
                 </h3>
                 <div class="space-y-4">
                     <div>
+                        <label class="block text-xs text-zinc-400 mb-1" data-i18n="lbl_owner_whatsapp">رقم واتساب المالك وخدمة العملاء (WhatsApp)</label>
+                        <input id="edit-owner-whatsapp" type="text" placeholder="مثال: 01012345678 أو 201012345678" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm font-mono">
+                        <span class="text-[10px] text-zinc-500">يصلك عليه كل طلبات العملاء فوراً وتتحول عليه محادثات خدمة العملاء</span>
+                    </div>
+                    <div>
                         <label class="block text-xs text-zinc-400 mb-1" data-i18n="lbl_owner_pass">تغيير كلمة مرور المالك (Owner Password)</label>
                         <input id="edit-owner-pass" type="text" placeholder="كلمة المرور الحالية أو جديدة" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm font-mono">
-                        <span class="text-[10px] text-zinc-500">هذه الكلمة هي التي تمنع أي شخص غريب من الدخول للوحة التحكم</span>
+                        <span class="text-[10px] text-zinc-500">كلمة المرور لحماية لوحة التحكم ومنع الزوار من العبث بها</span>
                     </div>
                     <div>
                         <label class="block text-xs text-zinc-400 mb-1" data-i18n="lbl_vf_wallet">رقم محفظة فودافون كاش (Vodafone Cash)</label>
@@ -210,18 +215,28 @@
             </table>
         </div>
 
-        <!-- Recent Orders Table -->
+        <!-- Recent Orders Table (Owner Orders Box) -->
         <div class="mt-8 bg-[#1A1A1A] p-6 rounded-2xl border border-zinc-800 overflow-x-auto">
-            <h3 class="text-lg font-bold mb-4" data-i18n="orders_list_title">الطلبات الواردة</h3>
+            <div class="flex flex-wrap justify-between items-center mb-4 gap-2">
+                <h3 class="text-lg font-bold flex items-center gap-2">
+                    <span>📋</span>
+                    <span data-i18n="orders_list_title">الطلبات الواردة من الزبائن (خانة المالك)</span>
+                </h3>
+                <span class="text-xs text-zinc-400 bg-zinc-900 px-3 py-1.5 rounded-lg border border-zinc-800">
+                    كل طلب يقوم به أي زائر يُسجل هنا فوراً، مع إرسال إشعار كامل على واتساب المالك
+                </span>
+            </div>
             <table class="w-full text-sm text-right">
                 <thead class="text-zinc-400 border-b border-zinc-800">
                     <tr>
-                        <th class="pb-3">رقم الطلب</th>
+                        <th class="pb-3">رقم الطلب والتاريخ</th>
                         <th class="pb-3">العميل</th>
                         <th class="pb-3">الهاتف والعنوان</th>
-                        <th class="pb-3">المنتجات</th>
+                        <th class="pb-3">المنتجات المطلوبة</th>
                         <th class="pb-3">الإجمالي</th>
-                        <th class="pb-3">طريقة الدفع / الحالة</th>
+                        <th class="pb-3">طريقة الدفع</th>
+                        <th class="pb-3">حالة الطلب</th>
+                        <th class="pb-3">واتساب العميل</th>
                     </tr>
                 </thead>
                 <tbody id="orders-table-body" class="divide-y divide-zinc-800">
@@ -307,36 +322,26 @@
                     <input id="cust-name" required placeholder="الاسم بالكامل / Full Name" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
                     <input id="cust-phone" required placeholder="رقم الموبايل / Phone Number" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
                     <input id="cust-address" required placeholder="المحافظة والعنوان بالتفصيل / Address" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
-                    <button type="submit" class="w-full gold-bg text-black font-bold py-3 rounded-xl hover:opacity-90 transition mt-2" data-i18n="btn_confirm_order">
-                        تأكيد الطلب الآن
+                    
+                    <button type="submit" class="w-full gold-bg text-black font-bold py-3.5 rounded-xl hover:opacity-90 transition mt-2 flex items-center justify-center gap-2 text-sm shadow-lg">
+                        <span>🛍️</span>
+                        <span data-i18n="btn_confirm_order">تأكيد الطلب وإرسال التفاصيل لواتساب المتجر</span>
                     </button>
+                    <p class="text-[11px] text-zinc-400 text-center mt-1">يتم تسجيل الطلب في لوحة تحكم المالك فوراً وتحويل الفاتورة على الواتساب</p>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- CUSTOMER SUPPORT LOBBY -->
+    <!-- DIRECT WHATSAPP CUSTOMER SERVICE FLOATING BUTTON -->
     <div class="fixed bottom-5 right-5 z-40">
-        <button onclick="toggleChat()" class="gold-bg text-black p-3.5 rounded-full shadow-xl hover:scale-105 transition flex items-center gap-2 font-bold text-sm">
-            <span>💬</span>
-            <span class="hidden sm:inline" data-i18n="chat_btn">اسأل خبير العطور</span>
-        </button>
-
-        <div id="chat-box" class="hidden absolute bottom-16 right-0 w-80 bg-[#1A1A1A] border border-zinc-700 rounded-2xl shadow-2xl overflow-hidden">
-            <div class="bg-zinc-900 p-3.5 border-b border-zinc-800 flex justify-between items-center">
-                <span class="font-bold text-sm gold-text" data-i18n="chat_header">خدمة عملاء MARIO</span>
-                <button onclick="toggleChat()" class="text-zinc-400 hover:text-white">&times;</button>
-            </div>
-            <div id="chat-messages" class="p-3 h-56 overflow-y-auto space-y-2 text-xs">
-                <div class="bg-zinc-800 p-2.5 rounded-lg text-zinc-200">
-                    أهلاً بك في MARIO! محتار تختار عطر مناسب لذوقك؟ اكتب لنا بتحب الروائح الهادية ولا القوية وهنساعدك فوراً.
-                </div>
-            </div>
-            <form onsubmit="sendChatMessage(event)" class="p-2 border-t border-zinc-800 flex gap-2">
-                <input id="chat-input" required placeholder="اكتب رسالتك..." class="flex-grow bg-zinc-900 border border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs">
-                <button type="submit" class="gold-bg text-black font-bold px-3 py-1.5 rounded-lg text-xs">إرسال</button>
-            </form>
-        </div>
+        <a href="#" onclick="openWhatsAppCustomerService(event)" class="whatsapp-btn group flex items-center gap-2.5 bg-[#25D366] hover:bg-[#20bd5a] text-white px-4 py-3 rounded-full shadow-2xl transition duration-300 hover:scale-105 border-2 border-white/20">
+            <!-- WhatsApp Official SVG Icon -->
+            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.173.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.086s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.159.57 4.184 1.564 5.946l-1.564 5.882 6.033-1.583c1.701.928 3.65 1.755 5.967 1.755 6.627 0 12-5.373 12-12 0-6.627-5.373-12-12-12z"/>
+            </svg>
+            <span class="font-bold text-sm tracking-wide hidden sm:inline" data-i18n="chat_btn">خدمة العملاء (واتساب)</span>
+        </a>
     </div>
 
     <!-- Footer with English-only Developer Signature -->
