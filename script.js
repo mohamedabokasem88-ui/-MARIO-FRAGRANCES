@@ -98,7 +98,7 @@ const i18n = {
         btn_confirm_order: "تأكيد الطلب وإرسال الفاتورة لواتساب المتجر",
         chat_btn: "خدمة العملاء (واتساب)",
         admin_title: "لوحة تحكم المالك (Owner Dashboard)",
-        admin_sub: "منطقة محمية: تحكم كامل في المبيعات، المخزون، الأسعار، الصور، والواتساب من داخل الموقع",
+        admin_sub: "منطقة محمية: تحكم كامل في المبيعات، المخزون، الأسعار، الصور، وحذف الطلبات",
         back_store: "العودة للمتجر ←",
         btn_logout: "تسجيل الخروج",
         stat_sales: "إجمالي المبيعات",
@@ -140,7 +140,7 @@ const i18n = {
         btn_confirm_order: "Confirm Order & Send to Store WhatsApp",
         chat_btn: "WhatsApp Support",
         admin_title: "Owner Dashboard",
-        admin_sub: "Protected Zone: Full control over sales, inventory, prices, photos, and WhatsApp inside site",
+        admin_sub: "Protected Zone: Full control over sales, inventory, prices, photos, and orders deletion",
         back_store: "← Back to Store",
         btn_logout: "Logout",
         stat_sales: "Total Revenue",
@@ -529,6 +529,38 @@ function updateOrderStatus(orderId, newStatus) {
     }
 }
 
+// Owner Feature: Delete Single Order
+function deleteOrder(orderId) {
+    const confirmMsg = currentLang === 'ar' 
+        ? `هل أنت متأكد من حذف الطلب رقم ${orderId} نهائياً؟` 
+        : `Are you sure you want to permanently delete order ${orderId}?`;
+    
+    if (!confirm(confirmMsg)) return;
+
+    orders = orders.filter(o => o.id !== orderId);
+    localStorage.setItem('mario_orders', JSON.stringify(orders));
+    renderAdmin();
+}
+
+// Owner Feature: Clear All Orders
+function clearAllOrders() {
+    if (orders.length === 0) {
+        alert(currentLang === 'ar' ? 'سجل الطلبات فارغ بالفعل!' : 'Orders log is already empty!');
+        return;
+    }
+
+    const confirmMsg = currentLang === 'ar'
+        ? 'تحذير: هل أنت متأكد من مسح جميع الطلبات المسجلة بالكامل؟ لا يمكن التراجع عن هذا الإجراء.'
+        : 'Warning: Are you sure you want to clear all recorded orders?';
+
+    if (!confirm(confirmMsg)) return;
+
+    orders = [];
+    localStorage.setItem('mario_orders', JSON.stringify(orders));
+    renderAdmin();
+    alert(currentLang === 'ar' ? 'تم مسح سجل الطلبات بالكامل.' : 'All orders cleared successfully.');
+}
+
 // Message Customer on WhatsApp from Owner Dashboard
 function contactCustomerWhatsApp(phone, orderId) {
     const num = cleanWhatsAppNumber(phone);
@@ -581,7 +613,7 @@ function renderAdmin() {
         `).join('') : `<tr><td colspan="5" class="py-6 text-center text-zinc-500">لا توجد عطور مضافة بعد</td></tr>`;
     }
 
-    // Render Orders Table (Owner Box)
+    // Render Orders Table (Owner Box) with Delete and Action Controls
     const tbody = document.getElementById('orders-table-body');
     if (tbody) {
         tbody.innerHTML = orders.length ? orders.map(o => `
@@ -596,7 +628,7 @@ function renderAdmin() {
                 <td class="py-3 font-bold gold-text whitespace-nowrap">${o.total} EGP</td>
                 <td class="py-3 text-xs text-zinc-300">${o.payment || ''}</td>
                 <td class="py-3">
-                    <select onchange="updateOrderStatus('${o.id}', this.value)" class="bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-xs text-amber-300">
+                    <select onchange="updateOrderStatus('${o.id}', this.value)" class="bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-xs text-amber-300 outline-none">
                         <option value="جديد (قيد المراجعة)" ${o.status === 'جديد (قيد المراجعة)' ? 'selected' : ''}>جديد (قيد المراجعة)</option>
                         <option value="تم التأكيد" ${o.status === 'تم التأكيد' ? 'selected' : ''}>تم التأكيد</option>
                         <option value="جاري الشحن" ${o.status === 'جاري الشحن' ? 'selected' : ''}>جاري الشحن</option>
@@ -605,12 +637,17 @@ function renderAdmin() {
                     </select>
                 </td>
                 <td class="py-3">
-                    <button onclick="contactCustomerWhatsApp('${o.phone}', '${o.id}')" class="text-xs bg-emerald-950/60 text-emerald-300 border border-emerald-800 hover:bg-emerald-900 px-2.5 py-1.5 rounded flex items-center gap-1">
-                        <span>💬</span> <span>مراسلة</span>
-                    </button>
+                    <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                        <button onclick="contactCustomerWhatsApp('${o.phone}', '${o.id}')" class="text-xs bg-emerald-950/60 text-emerald-300 border border-emerald-800 hover:bg-emerald-900 px-2.5 py-1.5 rounded flex items-center gap-1 transition" title="مراسلة الزبون على واتسابه">
+                            <span>💬</span> <span>مراسلة</span>
+                        </button>
+                        <button onclick="deleteOrder('${o.id}')" class="text-xs bg-red-950/60 hover:bg-red-900/80 text-red-400 border border-red-800/80 px-2 py-1.5 rounded flex items-center gap-1 transition" title="حذف هذا الطلب">
+                            <span>🗑️</span> <span>حذف</span>
+                        </button>
+                    </div>
                 </td>
             </tr>
-        `).join('') : `<tr><td colspan="8" class="py-8 text-center text-zinc-500">لا توجد طلبات مسجلة حتى الآن</td></tr>`;
+        `).join('') : `<tr><td colspan="8" class="py-8 text-center text-zinc-500">لا توجد طلبات مسجلة حالياً (السجل فارغ)</td></tr>`;
     }
 }
 

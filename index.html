@@ -85,7 +85,7 @@
                     <span>👑</span>
                     <span data-i18n="admin_title">لوحة تحكم المالك (Owner Dashboard)</span>
                 </h1>
-                <p class="text-zinc-400 text-sm" data-i18n="admin_sub">منطقة محمية: تحكم كامل في المبيعات، المخزون، الأسعار، الصور، والواتساب من داخل الموقع</p>
+                <p class="text-zinc-400 text-sm" data-i18n="admin_sub">منطقة محمية: تحكم كامل في المبيعات، المخزون، الأسعار، الصور، وحذف الطلبات</p>
             </div>
             <div class="flex gap-2 flex-wrap">
                 <button onclick="exportBackup()" class="text-xs bg-emerald-900/50 text-emerald-300 border border-emerald-700 px-3 py-2 rounded-lg hover:bg-emerald-900 transition">
@@ -227,16 +227,24 @@
             </table>
         </div>
 
-        <!-- Recent Orders Table (Owner Orders Box) -->
+        <!-- Recent Orders Table (Owner Orders Box with Delete Controls) -->
         <div class="mt-8 bg-[#1A1A1A] p-6 rounded-2xl border border-zinc-800 overflow-x-auto">
-            <div class="flex flex-wrap justify-between items-center mb-4 gap-2">
-                <h3 class="text-lg font-bold flex items-center gap-2">
-                    <span>📋</span>
-                    <span data-i18n="orders_list_title">الطلبات الواردة من الزبائن (خانة المالك)</span>
-                </h3>
-                <span class="text-xs text-emerald-400 bg-zinc-900 px-3 py-1.5 rounded-lg border border-zinc-800 font-semibold">
-                    كل طلب يقوم به الزائر يُسجل هنا فوراً، مع إرسال إشعار كامل على واتسابك: 01279001424
-                </span>
+            <div class="flex flex-wrap justify-between items-center mb-4 gap-3">
+                <div class="flex items-center gap-2">
+                    <h3 class="text-lg font-bold flex items-center gap-2">
+                        <span>📋</span>
+                        <span data-i18n="orders_list_title">الطلبات الواردة من الزبائن (خانة المالك)</span>
+                    </h3>
+                    <span class="text-xs text-emerald-400 bg-zinc-900 px-3 py-1 rounded-lg border border-zinc-800 font-semibold hidden md:inline-block">
+                        تصلك أيضاً على واتسابك: 01279001424
+                    </span>
+                </div>
+                
+                <!-- Clear All Orders Button for Owner -->
+                <button onclick="clearAllOrders()" class="text-xs text-red-400 border border-red-900/70 bg-red-950/40 px-3 py-1.5 rounded-lg hover:bg-red-900/60 transition flex items-center gap-1.5 shadow-sm">
+                    <span>🗑️</span>
+                    <span>مسح جميع الطلبات</span>
+                </button>
             </div>
             <table class="w-full text-sm text-right">
                 <thead class="text-zinc-400 border-b border-zinc-800">
@@ -248,7 +256,7 @@
                         <th class="pb-3">الإجمالي</th>
                         <th class="pb-3">طريقة الدفع</th>
                         <th class="pb-3">حالة الطلب</th>
-                        <th class="pb-3">واتساب العميل</th>
+                        <th class="pb-3 text-center">إجراءات وتحكم</th>
                     </tr>
                 </thead>
                 <tbody id="orders-table-body" class="divide-y divide-zinc-800">
