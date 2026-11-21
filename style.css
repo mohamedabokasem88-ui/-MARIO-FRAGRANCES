@@ -1,0 +1,61 @@
+:root {
+    --primary-gold: #D4AF37;
+    --bg-dark: #0F0F0F;
+    --card-dark: #1A1A1A;
+}
+
+body {
+    font-family: 'Cairo', sans-serif;
+    background-color: var(--bg-dark);
+    color: #F5F5F5;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.brand-font {
+    font-family: 'Playfair Display', serif;
+}
+
+.gold-text {
+    color: var(--primary-gold);
+}
+
+.gold-bg {
+    background-color: var(--primary-gold);
+}
+
+.gold-border {
+    border-color: var(--primary-gold);
+}
+
+/* Custom Webkit Scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0F0F0F;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #333333;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555555;
+}
+
+/* Smooth Drawer Transition */
+#cart-panel {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Table Row Hover State */
+tbody tr {
+    transition: background-color 0.15s ease-in-out;
+}
+
+tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
