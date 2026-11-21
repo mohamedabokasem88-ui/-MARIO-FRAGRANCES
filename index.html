@@ -87,9 +87,18 @@
                 </h1>
                 <p class="text-zinc-400 text-sm" data-i18n="admin_sub">منطقة محمية: تحكم كامل في المبيعات، المخزون، الأسعار، الصور، وحذف الطلبات</p>
             </div>
-            <div class="flex gap-2 flex-wrap">
+            <div class="flex gap-2 flex-wrap items-center">
                 <button onclick="exportBackup()" class="text-xs bg-emerald-900/50 text-emerald-300 border border-emerald-700 px-3 py-2 rounded-lg hover:bg-emerald-900 transition">
                     💾 حفظ نسخة احتياطية
+                </button>
+                <label class="cursor-pointer text-xs bg-amber-900/50 text-amber-300 border border-amber-700 px-3 py-2 rounded-lg hover:bg-amber-900 transition flex items-center gap-1">
+                    <span>📥</span>
+                    <span>استيراد ملف منتجات (JSON)</span>
+                    <input type="file" id="import-backup-file" accept=".json" onchange="importBackup(event)" class="hidden">
+                </label>
+                <button onclick="copyProductsCode()" class="text-xs bg-zinc-800 text-zinc-300 border border-zinc-700 px-3 py-2 rounded-lg hover:bg-zinc-700 transition flex items-center gap-1">
+                    <span>📋</span>
+                    <span>نسخ كود المنتجات</span>
                 </button>
                 <button onclick="switchView('store')" class="text-sm border border-zinc-700 px-4 py-2 rounded-lg hover:bg-zinc-800" data-i18n="back_store">العودة للمتجر ←</button>
                 <button onclick="adminLogout()" class="text-sm bg-red-950/60 text-red-400 border border-red-800/80 px-4 py-2 rounded-lg hover:bg-red-900/80 transition flex items-center gap-1.5">
@@ -225,6 +234,34 @@
                 <tbody id="admin-products-table" class="divide-y divide-zinc-800">
                 </tbody>
             </table>
+        </div>
+
+        <!-- Cloud Sync: Realtime sync across all visitors & customers -->
+        <div class="mt-8 bg-[#1A1A1A] p-6 rounded-2xl border border-zinc-800">
+            <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
+                <h3 class="text-lg font-bold flex items-center gap-2">
+                    <span>🌐</span>
+                    <span>المزامنة السحابية الحية (Cloud Sync - لظهور المنتجات لكل الزوار)</span>
+                </h3>
+                <span id="cloud-sync-status" class="text-xs px-3 py-1 rounded-full border border-zinc-700 bg-zinc-900 text-zinc-400">
+                    وضع التخزين المحلي (Offline / Local)
+                </span>
+            </div>
+            <p class="text-xs text-zinc-400 mb-4 leading-relaxed">
+                لكي يظهر أي عطر تضيفه أو تحذفه من هنا لكل الزوار حول العالم فوراً بدون لمس الأكواد، يمكنك ربط قاعدة بيانات سحابية مجانية (مثل Firebase Realtime Database أو أي REST API Endpoint).
+            </p>
+            <div class="flex flex-col sm:flex-row gap-2.5 items-stretch">
+                <input id="cloud-endpoint-input" type="url" placeholder="https://your-project.firebaseio.com/products.json" class="flex-grow bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-xs font-mono text-emerald-400 outline-none focus:border-[#D4AF37]">
+                <button type="button" onclick="saveCloudEndpoint()" class="gold-bg text-black font-bold text-xs px-4 py-2 rounded-lg hover:opacity-90 transition whitespace-nowrap">
+                    حفظ وتفعيل السحابة
+                </button>
+                <button type="button" onclick="pushProductsToCloud()" class="bg-emerald-950/70 border border-emerald-700 text-emerald-300 font-bold text-xs px-4 py-2 rounded-lg hover:bg-emerald-900 transition whitespace-nowrap">
+                    رفع العطور للسحابة ⬆️
+                </button>
+            </div>
+            <div class="mt-3 flex items-center gap-2 text-[11px] text-zinc-500">
+                <span>💡 عند تفعيل الرابط، أي تعديل أو حذف تقوم به كمالك سيُحفظ سحابياً ويراه كل الزبائن فورياً.</span>
+            </div>
         </div>
 
         <!-- Recent Orders Table (Owner Orders Box with Delete Controls) -->

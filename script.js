@@ -19,8 +19,11 @@ if (!savedVf || savedVf === '01000000000') {
 let vfWallet = savedVf;
 
 let savedHeroTitle = localStorage.getItem('mario_hero_title') || 'اكتشف توقيعك العطري مع MARIO';
-let savedHeroSub = localStorage.getItem('mario_hero_sub') || 'تركيبات عطرية فريدة بثبات عالي وفوحان استثنائي، تصلك لباب بيتك مع الدفع عند الاستلام أو كاش.';
+let savedHeroSub = localStorage.getItem('mario_hero_sub') || 'تركيبات عطرية فريدة بثبات عالي وفوحان استثنائي ؛ متوفر 10ml , 30ml , 50ml , 100ml';
 let savedThemeColor = localStorage.getItem('mario_theme_color') || '#D4AF37';
+
+// Cloud Sync Endpoint (Firebase / REST API)
+let cloudEndpoint = localStorage.getItem('mario_cloud_endpoint') || '';
 
 // Apply saved theme color and hero content
 document.documentElement.style.setProperty('--primary-gold', savedThemeColor);
@@ -29,48 +32,76 @@ const heroSubEl = document.getElementById('hero-sub-display');
 if (heroTitleEl) heroTitleEl.innerText = savedHeroTitle;
 if (heroSubEl) heroSubEl.innerText = savedHeroSub;
 
-// Default products list
-let products = JSON.parse(localStorage.getItem('mario_products')) || [
+// Default official products catalog from MARIO_Store_Backup
+const defaultProducts = [
     {
-        id: 1,
-        name_ar: "ماريو نوار (Mario Noir)",
-        name_en: "Mario Noir",
+        id: 1795270536553,
+        name_ar: "سترونجر ويذ يو إنتنسلي",
+        name_en: "Stronger with you intensely",
         category: "men",
-        price: 850,
-        stock: 25,
-        notes_ar: "برغموت، فلفل أسود، عنبر، خشب الصندل",
-        notes_en: "Bergamot, Black Pepper, Amber, Sandalwood",
-        size: "100ml EDP",
+        price: 350,
+        stock: 10,
+        notes_ar: "الافتتاحية: الفلفل الوردي.  القلب: اللافندر والميرمية.  القاعدة: خشب العنبر والفانيليا.",
+        notes_en: "Top Notes: Pink Pepper Heart Notes: Lavender and Sage Base Notes: Amberwood and Vanilla",
+        size: "50ml",
         image: "",
-        color: "from-zinc-800 to-black"
+        color: "from-amber-950/60 to-black"
     },
     {
-        id: 2,
-        name_ar: "ماريو فيلفيت روز (Velvet Rose)",
-        name_en: "Mario Velvet Rose",
+        id: 1795271862476,
+        name_ar: "لو مال إليكسير",
+        name_en: "Le Male Elixir",
+        category: "men",
+        price: 370,
+        stock: 10,
+        notes_ar: "الافتتاحية: النعناع واللافندر، القلب: الفانيليا والراتينج، القاعدة: العسل وفول التونكا والتبغ",
+        notes_en: "Mint and Lavender, Heart Notes: Vanilla and Benzoin, Base Notes: Honey, Tonka Bean, and Tobacco",
+        size: "50ml",
+        image: "",
+        color: "from-amber-950/60 to-black"
+    },
+    {
+        id: 1795272486355,
+        name_ar: "يارا كاندي",
+        name_en: "Yara Candy",
         category: "women",
-        price: 900,
-        stock: 18,
-        notes_ar: "ورد دمشقي، فانيليا مدغشقر، مسك أبيض",
-        notes_en: "Damask Rose, Madagascar Vanilla, White Musk",
-        size: "100ml EDP",
+        price: 350,
+        stock: 10,
+        notes_ar: "الافتتاحية: اليوسفي الأخضر والكشمش الأسود، القلب: حلوى الفراولة والوردية، القاعدة: خشب الصندل والفانيليا والمسك والعنبر",
+        notes_en: "Green Tangerine and Blackcurrant, Heart Notes: Strawberry Candy and Gardenia, Base Notes: Sandalwood, Vanilla, Musk, and Amber",
+        size: "50ml",
         image: "",
         color: "from-rose-950/60 to-black"
     },
     {
-        id: 3,
-        name_ar: "ماريو رويال عود (Royal Oud)",
-        name_en: "Mario Royal Oud",
-        category: "unisex",
-        price: 1100,
-        stock: 12,
-        notes_ar: "عود كمبودي، زعفران، باتشولي، جلد",
-        notes_en: "Cambodian Oud, Saffron, Patchouli, Leather",
-        size: "100ml Extrait",
+        id: 1795297754689,
+        name_ar: "الثائر",
+        name_en: "Althaer",
+        category: "men",
+        price: 350,
+        stock: 10,
+        notes_ar: "الافتتاحية: البرغموت والليمون، القلب: الورد والياسمين، القاعدة: العنبر والخشب ",
+        notes_en: "Bergamot and Lemon, Heart Notes: Rose and Jasmine, Base Notes: Amber and Wood",
+        size: "50ml",
         image: "",
-        color: "from-amber-950/60 to-black"
+        color: "from-zinc-800 to-black"
     }
 ];
+
+// Product loading with automatic migration to real products
+let products = [];
+try {
+    const stored = JSON.parse(localStorage.getItem('mario_products'));
+    // If stored products are the old dummy ones (IDs 1, 2, 3), upgrade to the real catalog
+    if (stored && Array.isArray(stored) && stored.length > 0 && stored[0].id !== 1) {
+        products = stored;
+    } else {
+        products = [...defaultProducts];
+        localStorage.setItem('mario_products', JSON.stringify(products));
+    }
+} catch (e) {
+    products = [...defaultProducts];
+}
 
 let cart = JSON.parse(localStorage.getItem('mario_cart')) || [];
 let orders = JSON.parse(localStorage.getItem('mario_orders')) || [];
@@ -594,6 +625,10 @@ function renderAdmin() {
     if (editOwnerPass) editOwnerPass.value = ownerPassword;
     if (editOwnerWhatsApp) editOwnerWhatsApp.value = ownerWhatsApp === '201279001424' ? '01279001424' : ownerWhatsApp;
 
+    const cloudInput = document.getElementById('cloud-endpoint-input');
+    if (cloudInput) cloudInput.value = cloudEndpoint;
+    updateCloudStatusBadge();
+
     updateWhatsAppLinks();
 
     // Render Admin Products Table
@@ -686,6 +721,7 @@ function saveProduct(e) {
         renderProducts();
         renderAdmin();
         resetProductForm();
+        pushProductsToCloud();
         alert(editId ? 'تم تعديل العطر بنجاح!' : 'تمت إضافة العطر للمتجر بنجاح!');
     };
 
@@ -737,6 +773,7 @@ function deleteProduct(id) {
     localStorage.setItem('mario_products', JSON.stringify(products));
     renderProducts();
     renderAdmin();
+    pushProductsToCloud();
 }
 
 // Clear Demo Products
@@ -746,6 +783,7 @@ function clearDemoProducts() {
     localStorage.setItem('mario_products', JSON.stringify(products));
     renderProducts();
     renderAdmin();
+    pushProductsToCloud();
 }
 
 // Export JSON Backup
@@ -813,6 +851,123 @@ function saveStoreSettings() {
     alert(currentLang === 'ar' ? 'تم حفظ الإعدادات، رقم الواتساب، كلمة المرور ورقم المحفظة بنجاح!' : 'Settings, WhatsApp number, Owner password, and Wallet saved successfully!');
 }
 
+// Import JSON Backup from file (e.g. MARIO_Store_Backup.json)
+function importBackup(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+        try {
+            const data = JSON.parse(evt.target.result);
+            if (data.products && Array.isArray(data.products) && data.products.length > 0) {
+                products = data.products;
+                localStorage.setItem('mario_products', JSON.stringify(products));
+            }
+            if (data.heroTitle) {
+                savedHeroTitle = data.heroTitle;
+                localStorage.setItem('mario_hero_title', savedHeroTitle);
+                const el = document.getElementById('hero-title-display');
+                if (el) el.innerText = savedHeroTitle;
+            }
+            if (data.heroSub) {
+                savedHeroSub = data.heroSub;
+                localStorage.setItem('mario_hero_sub', savedHeroSub);
+                const el = document.getElementById('hero-sub-display');
+                if (el) el.innerText = savedHeroSub;
+            }
+            if (data.themeColor) {
+                changeThemeColor(data.themeColor);
+            }
+            if (data.vfWallet) {
+                vfWallet = data.vfWallet;
+                localStorage.setItem('mario_vf_wallet', vfWallet);
+            }
+            if (data.orders && Array.isArray(data.orders) && data.orders.length > 0) {
+                orders = data.orders;
+                localStorage.setItem('mario_orders', JSON.stringify(orders));
+            }
+            renderProducts();
+            if (isOwnerAuthenticated()) renderAdmin();
+            pushProductsToCloud();
+            alert('تم استيراد جميع المنتجات والإعدادات من الملف بنجاح!');
+        } catch (err) {
+            alert('عفواً، الملف الذي اخترته غير صالح أو به خطأ في التنسيق.');
+        }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+}
+
+// Copy Updated Products Code for script.js
+function copyProductsCode() {
+    const code = `const defaultProducts = ${JSON.stringify(products, null, 2)};`;
+    navigator.clipboard.writeText(code).then(() => {
+        alert('تم نسخ كود المنتجات الحالي إلى الحافظة!\nيمكنك لصقه في ملف script.js في أي وقت.');
+    }).catch(() => {
+        prompt('انسخ كود المنتجات يدوياً:', code);
+    });
+}
+
+// Cloud Sync Functions
+function saveCloudEndpoint() {
+    const input = document.getElementById('cloud-endpoint-input');
+    const url = input ? input.value.trim() : '';
+    cloudEndpoint = url;
+    localStorage.setItem('mario_cloud_endpoint', url);
+    updateCloudStatusBadge();
+    if (url) {
+        alert('تم حفظ رابط السحابة بنجاح! جاري رفع المنتجات الحالية للسحابة...');
+        pushProductsToCloud(true);
+    } else {
+        alert('تم إلغاء تفعيل السحابة والعودة للتخزين المحلي.');
+    }
+}
+
+function updateCloudStatusBadge() {
+    const badge = document.getElementById('cloud-sync-status');
+    if (!badge) return;
+    if (cloudEndpoint) {
+        badge.className = 'text-xs px-3 py-1 rounded-full border border-emerald-600 bg-emerald-950/60 text-emerald-300 flex items-center gap-1';
+        badge.innerHTML = '<span>🟢</span> <span>متصل بالسحابة (Realtime Active)</span>';
+    } else {
+        badge.className = 'text-xs px-3 py-1 rounded-full border border-zinc-700 bg-zinc-900 text-zinc-400';
+        badge.innerHTML = '<span>⚪</span> <span>وضع التخزين المحلي (Offline / Local)</span>';
+    }
+}
+
+function pushProductsToCloud(showAlert = false) {
+    if (!cloudEndpoint) return;
+    fetch(cloudEndpoint, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(products)
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        if (showAlert) alert('تم رفع المنتجات إلى السحابة بنجاح! ستظهر الآن لجميع الزوار فوراً.');
+    })
+    .catch(err => {
+        console.error('Cloud Sync Error:', err);
+        if (showAlert) alert('تعذر الرفع للسحابة. يرجى التأكد من صحة الرابط وأذونات القراءة/الكتابة.');
+    });
+}
+
+function fetchProductsFromCloud() {
+    if (!cloudEndpoint) return;
+    fetch(cloudEndpoint)
+        .then(res => res.json())
+        .then(data => {
+            if (data && Array.isArray(data) && data.length > 0) {
+                products = data;
+                localStorage.setItem('mario_products', JSON.stringify(products));
+                renderProducts();
+                if (isOwnerAuthenticated()) renderAdmin();
+            }
+        })
+        .catch(err => console.log('Offline or Cloud Fetch Error, using local products.', err));
+}
+
 // Multi-language Toggle (Arabic / English)
 function toggleLanguage() {
     currentLang = currentLang === 'ar' ? 'en' : 'ar';
@@ -849,4 +1004,5 @@ document.addEventListener('DOMContentLoaded', () => {
     renderProducts();
     saveAndRenderCart();
     handlePaymentChange();
+    fetchProductsFromCloud();
 });
