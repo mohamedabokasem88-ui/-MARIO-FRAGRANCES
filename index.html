@@ -22,9 +22,11 @@
 
             <div class="flex items-center gap-3 md:gap-6">
                 <button onclick="switchView('store')" class="text-sm hover:text-[#D4AF37] transition" data-i18n="nav_store">المتجر</button>
-                <button onclick="switchView('admin')" class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded-lg border border-zinc-700 transition flex items-center gap-1.5">
-                    <span>⚙️</span>
-                    <span data-i18n="nav_admin">لوحة التحكم</span>
+                
+                <!-- Protected Owner Button -->
+                <button onclick="openAdminAuth()" class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded-lg border border-zinc-700 transition flex items-center gap-1.5">
+                    <span>🔒</span>
+                    <span data-i18n="nav_admin">لوحة تحكم المالك</span>
                 </button>
                 
                 <button onclick="toggleLanguage()" class="text-xs font-bold border border-zinc-700 px-2.5 py-1.5 rounded hover:border-[#D4AF37] transition">
@@ -49,7 +51,7 @@
                 <h1 id="hero-title-display" class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
                     اكتشف توقيعك العطري مع MARIO
                 </h1>
-                <p id="hero-sub-display" class="text-zinc-400 text-base md:lg mb-8 max-w-xl mx-auto">
+                <p id="hero-sub-display" class="text-zinc-400 text-base md:text-lg mb-8 max-w-xl mx-auto">
                     تركيبات عطرية فريدة بثبات عالي وفوحان استثنائي، تصلك لباب بيتك مع الدفع عند الاستلام أو فودافون كاش.
                 </p>
                 <a href="#products-section" class="inline-block gold-bg text-black font-bold px-8 py-3.5 rounded-full hover:opacity-90 transition shadow-lg" data-i18n="hero_cta">
@@ -75,18 +77,25 @@
         </section>
     </main>
 
-    <!-- ADMIN & OWNER DASHBOARD VIEW -->
+    <!-- ADMIN & OWNER DASHBOARD VIEW (PROTECTED) -->
     <section id="admin-view" class="hidden max-w-7xl mx-auto w-full py-10 px-4 md:px-10 flex-grow">
         <div class="flex flex-wrap justify-between items-center mb-8 border-b border-zinc-800 pb-4 gap-4">
             <div>
-                <h1 class="text-2xl md:text-3xl font-bold gold-text" data-i18n="admin_title">لوحة تحكم المالك (Owner Dashboard)</h1>
-                <p class="text-zinc-400 text-sm" data-i18n="admin_sub">تحكم كامل في المبيعات، المخزون، الأسعار، الصور، وفودافون كاش من داخل الموقع بدون لمس الكود</p>
+                <h1 class="text-2xl md:text-3xl font-bold gold-text flex items-center gap-2">
+                    <span>👑</span>
+                    <span data-i18n="admin_title">لوحة تحكم المالك (Owner Dashboard)</span>
+                </h1>
+                <p class="text-zinc-400 text-sm" data-i18n="admin_sub">منطقة محمية: تحكم كامل في المبيعات، المخزون، الأسعار، الصور، وفودافون كاش من داخل الموقع</p>
             </div>
-            <div class="flex gap-2">
+            <div class="flex gap-2 flex-wrap">
                 <button onclick="exportBackup()" class="text-xs bg-emerald-900/50 text-emerald-300 border border-emerald-700 px-3 py-2 rounded-lg hover:bg-emerald-900 transition">
                     💾 حفظ نسخة احتياطية
                 </button>
                 <button onclick="switchView('store')" class="text-sm border border-zinc-700 px-4 py-2 rounded-lg hover:bg-zinc-800" data-i18n="back_store">العودة للمتجر ←</button>
+                <button onclick="adminLogout()" class="text-sm bg-red-950/60 text-red-400 border border-red-800/80 px-4 py-2 rounded-lg hover:bg-red-900/80 transition flex items-center gap-1.5">
+                    <span>🚪</span>
+                    <span data-i18n="btn_logout">تسجيل الخروج</span>
+                </button>
             </div>
         </div>
 
@@ -107,12 +116,17 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Storefront UI Customizer & Vodafone Cash Settings -->
+            <!-- Storefront UI Customizer, Security & Vodafone Cash Settings -->
             <div class="bg-[#1A1A1A] p-6 rounded-2xl border border-zinc-800">
                 <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                    <span>🎨</span> <span data-i18n="ui_customizer_title">إعدادات المتجر وفودافون كاش</span>
+                    <span>🎨</span> <span data-i18n="ui_customizer_title">إعدادات المتجر، الأمان وفودافون كاش</span>
                 </h3>
                 <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs text-zinc-400 mb-1" data-i18n="lbl_owner_pass">تغيير كلمة مرور المالك (Owner Password)</label>
+                        <input id="edit-owner-pass" type="text" placeholder="كلمة المرور الحالية أو جديدة" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm font-mono">
+                        <span class="text-[10px] text-zinc-500">هذه الكلمة هي التي تمنع أي شخص غريب من الدخول للوحة التحكم</span>
+                    </div>
                     <div>
                         <label class="block text-xs text-zinc-400 mb-1" data-i18n="lbl_vf_wallet">رقم محفظة فودافون كاش (Vodafone Cash)</label>
                         <input id="edit-vf-wallet" type="text" placeholder="مثال: 010xxxxxxxx" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm font-mono">
@@ -215,6 +229,34 @@
             </table>
         </div>
     </section>
+
+    <!-- OWNER AUTHENTICATION MODAL -->
+    <div id="admin-auth-modal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-[#181818] border border-[#D4AF37]/50 rounded-2xl p-6 sm:p-8 w-full max-w-md shadow-2xl relative text-center">
+            <button onclick="closeAdminAuth()" class="absolute top-4 left-4 text-zinc-400 hover:text-white text-xl">&times;</button>
+            
+            <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-zinc-900 border-2 border-[#D4AF37] flex items-center justify-center text-3xl shadow-lg shadow-[#D4AF37]/10">
+                🔒
+            </div>
+            
+            <h3 class="text-xl font-bold mb-1 gold-text" data-i18n="auth_modal_title">منطقة خاصة بالمالك فقط</h3>
+            <p class="text-zinc-400 text-xs mb-6" data-i18n="auth_modal_sub">يرجى إدخال كلمة مرور المالك للوصول إلى لوحة التحكم والتعديل على المتجر</p>
+            
+            <form id="admin-auth-form" onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <input id="admin-pass-input" type="password" required placeholder="أدخل كلمة المرور / Password" class="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-center tracking-widest text-white focus:border-[#D4AF37] outline-none transition">
+                    <p id="admin-auth-error" class="hidden text-xs text-red-400 mt-2 font-semibold"></p>
+                </div>
+                
+                <button type="submit" class="w-full gold-bg text-black font-bold py-3 rounded-xl hover:opacity-90 transition text-sm shadow-md" data-i18n="btn_login_admin">
+                    تسجيل الدخول كمالك
+                </button>
+                <button type="button" onclick="closeAdminAuth()" class="w-full text-zinc-400 text-xs hover:text-white py-1 transition" data-i18n="btn_cancel">
+                    إلغاء والعودة للمتجر
+                </button>
+            </form>
+        </div>
+    </div>
 
     <!-- SMART CART DRAWER -->
     <div id="cart-drawer" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm">

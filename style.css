@@ -46,7 +46,7 @@ body {
     background: #555555;
 }
 
-/* Smooth Drawer Transition */
+/* Smooth Drawer & Modal Transitions */
 #cart-panel {
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -58,4 +58,16 @@ tbody tr {
 
 tbody tr:hover {
     background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Shake Animation for Wrong Password */
+@keyframes shakeAnimation {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+}
+
+.shake-input {
+    animation: shakeAnimation 0.4s ease-in-out;
+    border-color: #EF4444 !important;
 }

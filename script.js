@@ -1,5 +1,6 @@
 // State Management
 let currentLang = 'ar';
+let ownerPassword = localStorage.getItem('mario_owner_password') || 'mario2026';
 let vfWallet = localStorage.getItem('mario_vf_wallet') || '01000000000';
 let savedHeroTitle = localStorage.getItem('mario_hero_title') || 'اكتشف توقيعك العطري مع MARIO';
 let savedHeroSub = localStorage.getItem('mario_hero_sub') || 'تركيبات عطرية فريدة بثبات عالي وفوحان استثنائي، تصلك لباب بيتك مع الدفع عند الاستلام أو فودافون كاش.';
@@ -62,7 +63,7 @@ let orders = JSON.parse(localStorage.getItem('mario_orders')) || [];
 const i18n = {
     ar: {
         nav_store: "المتجر",
-        nav_admin: "لوحة التحكم",
+        nav_admin: "لوحة تحكم المالك",
         hero_tag: "عطور مصممة لتدوم",
         hero_cta: "تسوق المجموعة الآن",
         collection_title: "مجموعة عطور MARIO",
@@ -82,23 +83,29 @@ const i18n = {
         chat_btn: "اسأل خبير العطور",
         chat_header: "خدمة عملاء MARIO",
         admin_title: "لوحة تحكم المالك (Owner Dashboard)",
-        admin_sub: "تحكم كامل في المبيعات، المخزون، الأسعار، الصور، وفودافون كاش من داخل الموقع بدون لمس الكود",
+        admin_sub: "منطقة محمية: تحكم كامل في المبيعات، المخزون، الأسعار، الصور، وفودافون كاش من داخل الموقع",
         back_store: "العودة للمتجر ←",
+        btn_logout: "تسجيل الخروج",
         stat_sales: "إجمالي المبيعات",
         stat_orders: "عدد الطلبات",
         stat_stock: "إجمالي الزجاجات بالمخزن",
-        ui_customizer_title: "إعدادات المتجر وفودافون كاش",
+        ui_customizer_title: "إعدادات المتجر، الأمان وفودافون كاش",
+        lbl_owner_pass: "تغيير كلمة مرور المالك (Owner Password)",
         lbl_vf_wallet: "رقم محفظة فودافون كاش (Vodafone Cash)",
         lbl_hero_title: "عنوان البنر الرئيسي (عربي)",
         lbl_accent_color: "لون هوية البراند (Accent Color)",
         btn_save_ui: "حفظ الإعدادات والتعديلات",
         add_product_title: "إضافة عطر جديد للمتجر",
         btn_add_perfume: "إضافة العطر",
-        orders_list_title: "الطلبات الواردة"
+        orders_list_title: "الطلبات الواردة",
+        auth_modal_title: "منطقة خاصة بالمالك فقط",
+        auth_modal_sub: "يرجى إدخال كلمة مرور المالك للوصول إلى لوحة التحكم والتعديل على المتجر",
+        btn_login_admin: "تسجيل الدخول كمالك",
+        btn_cancel: "إلغاء والعودة للمتجر"
     },
     en: {
         nav_store: "Store",
-        nav_admin: "Dashboard",
+        nav_admin: "Owner Dashboard",
         hero_tag: "SCENTS CRAFTED TO LAST",
         hero_cta: "Shop Collection",
         collection_title: "MARIO Signature Collection",
@@ -118,21 +125,84 @@ const i18n = {
         chat_btn: "Ask Perfume Expert",
         chat_header: "MARIO Live Support",
         admin_title: "Owner Dashboard",
-        admin_sub: "Full control over sales, inventory, prices, photos, and Vodafone Cash inside the site",
+        admin_sub: "Protected Zone: Full control over sales, inventory, prices, photos, and Vodafone Cash inside the site",
         back_store: "← Back to Store",
+        btn_logout: "Logout",
         stat_sales: "Total Revenue",
         stat_orders: "Total Orders",
         stat_stock: "Bottles in Stock",
-        ui_customizer_title: "Storefront & Vodafone Cash Settings",
+        ui_customizer_title: "Storefront, Security & Vodafone Cash Settings",
+        lbl_owner_pass: "Change Owner Password",
         lbl_vf_wallet: "Vodafone Cash Wallet Number",
         lbl_hero_title: "Main Hero Headline",
         lbl_accent_color: "Brand Accent Color",
         btn_save_ui: "Save Settings & Changes",
         add_product_title: "Add New Perfume",
         btn_add_perfume: "Add Perfume",
-        orders_list_title: "Incoming Orders"
+        orders_list_title: "Incoming Orders",
+        auth_modal_title: "Owner Only Access",
+        auth_modal_sub: "Please enter the Owner Password to access management tools and inventory",
+        btn_login_admin: "Login as Owner",
+        btn_cancel: "Cancel & Back to Store"
     }
 };
+
+// Owner Authentication System
+function isOwnerAuthenticated() {
+    return sessionStorage.getItem('mario_owner_authenticated') === 'true';
+}
+
+function openAdminAuth() {
+    if (isOwnerAuthenticated()) {
+        switchView('admin');
+        return;
+    }
+    const modal = document.getElementById('admin-auth-modal');
+    const input = document.getElementById('admin-pass-input');
+    const err = document.getElementById('admin-auth-error');
+    if (err) err.classList.add('hidden');
+    if (input) {
+        input.value = '';
+        input.classList.remove('shake-input');
+    }
+    if (modal) modal.classList.remove('hidden');
+    setTimeout(() => { if (input) input.focus(); }, 150);
+}
+
+function closeAdminAuth() {
+    const modal = document.getElementById('admin-auth-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function handleAdminLogin(e) {
+    e.preventDefault();
+    const input = document.getElementById('admin-pass-input');
+    const err = document.getElementById('admin-auth-error');
+    const entered = (input ? input.value : '').trim();
+
+    if (entered === ownerPassword) {
+        sessionStorage.setItem('mario_owner_authenticated', 'true');
+        closeAdminAuth();
+        switchView('admin');
+    } else {
+        if (err) {
+            err.innerText = currentLang === 'ar' ? 'عفواً! كلمة المرور غير صحيحة.' : 'Incorrect Password! Access Denied.';
+            err.classList.remove('hidden');
+        }
+        if (input) {
+            input.classList.remove('shake-input');
+            void input.offsetWidth; // Trigger reflow
+            input.classList.add('shake-input');
+            input.focus();
+        }
+    }
+}
+
+function adminLogout() {
+    sessionStorage.removeItem('mario_owner_authenticated');
+    switchView('store');
+    alert(currentLang === 'ar' ? 'تم تسجيل خروج المالك بنجاح.' : 'Logged out successfully.');
+}
 
 // Payment Option Toggle
 function handlePaymentChange() {
@@ -160,7 +230,7 @@ function renderProducts(filter = 'all') {
     const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
 
     if (filtered.length === 0) {
-        grid.innerHTML = `<div class="col-span-full text-center py-12 text-zinc-500">${currentLang === 'ar' ? 'لا توجد عطور في هذا القسم حالياً. أضف عطورك من لوحة التحكم!' : 'No fragrances in this section. Add perfumes from Dashboard!'}</div>`;
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-zinc-500">${currentLang === 'ar' ? 'لا توجد عطور في هذا القسم حالياً. أضف عطورك من لوحة تحكم المالك!' : 'No fragrances in this section. Add perfumes from Owner Dashboard!'}</div>`;
         return;
     }
 
@@ -341,7 +411,7 @@ function submitOrder(e) {
     cart = [];
     saveAndRenderCart();
     renderProducts();
-    renderAdmin();
+    if (isOwnerAuthenticated()) renderAdmin();
     toggleCart();
     e.target.reset();
     handlePaymentChange();
@@ -351,8 +421,14 @@ function submitOrder(e) {
         : `Order Recorded! Order ID: ${newOrder.id}\nPayment: ${paymentLabel}`);
 }
 
-// Switch between Storefront and Admin Dashboard
+// Switch between Storefront and Protected Admin Dashboard
 function switchView(view) {
+    if (view === 'admin') {
+        if (!isOwnerAuthenticated()) {
+            openAdminAuth();
+            return;
+        }
+    }
     const storeView = document.getElementById('store-view');
     const adminView = document.getElementById('admin-view');
     if (storeView) storeView.classList.toggle('hidden', view !== 'store');
@@ -377,10 +453,12 @@ function renderAdmin() {
     const editHeroTitle = document.getElementById('edit-hero-title');
     const editHeroSub = document.getElementById('edit-hero-sub');
     const editVfWallet = document.getElementById('edit-vf-wallet');
+    const editOwnerPass = document.getElementById('edit-owner-pass');
 
     if (editHeroTitle && heroTitleDisp) editHeroTitle.value = heroTitleDisp.innerText;
     if (editHeroSub && heroSubDisp) editHeroSub.value = heroSubDisp.innerText;
     if (editVfWallet) editVfWallet.value = vfWallet;
+    if (editOwnerPass) editOwnerPass.value = ownerPassword;
 
     // Render Admin Products Table
     const prodTbody = document.getElementById('admin-products-table');
@@ -515,6 +593,7 @@ function clearDemoProducts() {
 // Export JSON Backup
 function exportBackup() {
     const data = {
+        ownerPassword,
         vfWallet,
         heroTitle: savedHeroTitle,
         heroSub: savedHeroSub,
@@ -537,12 +616,17 @@ function changeThemeColor(hex) {
     document.documentElement.style.setProperty('--primary-gold', hex);
 }
 
-// Save Storefront Settings (Hero texts and Vodafone Cash number)
+// Save Storefront, Security & Vodafone Settings
 function saveStoreSettings() {
     const newTitle = document.getElementById('edit-hero-title').value;
     const newSub = document.getElementById('edit-hero-sub').value;
     const newWallet = document.getElementById('edit-vf-wallet').value.trim();
+    const newPass = document.getElementById('edit-owner-pass').value.trim();
 
+    if (newPass) {
+        ownerPassword = newPass;
+        localStorage.setItem('mario_owner_password', ownerPassword);
+    }
     if (newTitle.trim()) {
         savedHeroTitle = newTitle;
         localStorage.setItem('mario_hero_title', savedHeroTitle);
@@ -559,7 +643,7 @@ function saveStoreSettings() {
         const vfDisp = document.getElementById('vf-wallet-display');
         if (vfDisp) vfDisp.innerText = vfWallet;
     }
-    alert(currentLang === 'ar' ? 'تم حفظ إعدادات المتجر ورقم فودافون كاش!' : 'Store settings and Vodafone Cash wallet saved!');
+    alert(currentLang === 'ar' ? 'تم حفظ الإعدادات، كلمة مرور المالك ورقم فودافون كاش!' : 'Settings, Owner password, and Vodafone Cash wallet saved!');
 }
 
 // Multi-language Toggle (Arabic / English)
