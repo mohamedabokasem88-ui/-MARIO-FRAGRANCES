@@ -236,34 +236,6 @@
             </table>
         </div>
 
-        <!-- Cloud Sync: Realtime sync across all visitors & customers -->
-        <div class="mt-8 bg-[#1A1A1A] p-6 rounded-2xl border border-zinc-800">
-            <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
-                <h3 class="text-lg font-bold flex items-center gap-2">
-                    <span>🌐</span>
-                    <span>المزامنة السحابية الحية (Cloud Sync - لظهور المنتجات لكل الزوار)</span>
-                </h3>
-                <span id="cloud-sync-status" class="text-xs px-3 py-1 rounded-full border border-zinc-700 bg-zinc-900 text-zinc-400">
-                    وضع التخزين المحلي (Offline / Local)
-                </span>
-            </div>
-            <p class="text-xs text-zinc-400 mb-4 leading-relaxed">
-                لكي يظهر أي عطر تضيفه أو تحذفه من هنا لكل الزوار حول العالم فوراً بدون لمس الأكواد، يمكنك ربط قاعدة بيانات سحابية مجانية (مثل Firebase Realtime Database أو أي REST API Endpoint).
-            </p>
-            <div class="flex flex-col sm:flex-row gap-2.5 items-stretch">
-                <input id="cloud-endpoint-input" type="url" placeholder="https://your-project.firebaseio.com/products.json" class="flex-grow bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-xs font-mono text-emerald-400 outline-none focus:border-[#D4AF37]">
-                <button type="button" onclick="saveCloudEndpoint()" class="gold-bg text-black font-bold text-xs px-4 py-2 rounded-lg hover:opacity-90 transition whitespace-nowrap">
-                    حفظ وتفعيل السحابة
-                </button>
-                <button type="button" onclick="pushProductsToCloud()" class="bg-emerald-950/70 border border-emerald-700 text-emerald-300 font-bold text-xs px-4 py-2 rounded-lg hover:bg-emerald-900 transition whitespace-nowrap">
-                    رفع العطور للسحابة ⬆️
-                </button>
-            </div>
-            <div class="mt-3 flex items-center gap-2 text-[11px] text-zinc-500">
-                <span>💡 عند تفعيل الرابط، أي تعديل أو حذف تقوم به كمالك سيُحفظ سحابياً ويراه كل الزبائن فورياً.</span>
-            </div>
-        </div>
-
         <!-- Recent Orders Table (Owner Orders Box with Delete Controls) -->
         <div class="mt-8 bg-[#1A1A1A] p-6 rounded-2xl border border-zinc-800 overflow-x-auto">
             <div class="flex flex-wrap justify-between items-center mb-4 gap-3">

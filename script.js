@@ -22,9 +22,6 @@ let savedHeroTitle = localStorage.getItem('mario_hero_title') || 'اكتشف ت�
 let savedHeroSub = localStorage.getItem('mario_hero_sub') || 'تركيبات عطرية فريدة بثبات عالي وفوحان استثنائي ؛ متوفر 10ml , 30ml , 50ml , 100ml';
 let savedThemeColor = localStorage.getItem('mario_theme_color') || '#D4AF37';
 
-// Cloud Sync Endpoint (Firebase / REST API)
-let cloudEndpoint = localStorage.getItem('mario_cloud_endpoint') || '';
-
 // Apply saved theme color and hero content
 document.documentElement.style.setProperty('--primary-gold', savedThemeColor);
 const heroTitleEl = document.getElementById('hero-title-display');
@@ -514,11 +511,12 @@ ${itemsDetailText}
 💰 *الإجمالي المستحق:* ${orderTotal} EGP
 💳 *طريقة الدفع:* ${paymentLabel}
 ----------------------------------------
-تم تسجيل الطلب في لوحة تحكم المالك بنجاح.`;
+تم تسجيل الطلب في لوحة تحكم المتجر بنجاح.`;
 
     const ownerNum = cleanWhatsAppNumber(ownerWhatsApp);
     const waUrl = `https://api.whatsapp.com/send?phone=${ownerNum}&text=${encodeURIComponent(waOrderMessage)}`;
 
+    // Reset Cart & UI
     cart = [];
     saveAndRenderCart();
     renderProducts();
@@ -527,12 +525,11 @@ ${itemsDetailText}
     e.target.reset();
     handlePaymentChange();
 
-    alert(currentLang === 'ar' 
-        ? `تم تسجيل طلبك بنجاح برقم: ${newOrder.id}!\nسيتوجه المتصفح الآن لإرسال تفاصيل الطلب والفاتورة إلى واتساب المتجر.` 
-        : `Order Recorded! Order ID: ${newOrder.id}\nOpening WhatsApp to confirm order with store.`);
-
-    // Open WhatsApp
-    window.open(waUrl, '_blank');
+    // 3. Directly open WhatsApp (and fallback to navigation if popup is blocked)
+    const waWindow = window.open(waUrl, '_blank');
+    if (!waWindow || waWindow.closed || typeof waWindow.closed === 'undefined') {
+        window.location.href = waUrl;
+    }
 }
 
 // Switch between Storefront and Protected Admin Dashboard
@@ -624,10 +621,6 @@ function renderAdmin() {
     if (editVfWallet) editVfWallet.value = vfWallet;
     if (editOwnerPass) editOwnerPass.value = ownerPassword;
     if (editOwnerWhatsApp) editOwnerWhatsApp.value = ownerWhatsApp === '201279001424' ? '01279001424' : ownerWhatsApp;
-
-    const cloudInput = document.getElementById('cloud-endpoint-input');
-    if (cloudInput) cloudInput.value = cloudEndpoint;
-    updateCloudStatusBadge();
 
     updateWhatsAppLinks();
 
@@ -721,7 +714,6 @@ function saveProduct(e) {
         renderProducts();
         renderAdmin();
         resetProductForm();
-        pushProductsToCloud();
         alert(editId ? 'تم تعديل العطر بنجاح!' : 'تمت إضافة العطر للمتجر بنجاح!');
     };
 
@@ -773,7 +765,6 @@ function deleteProduct(id) {
     localStorage.setItem('mario_products', JSON.stringify(products));
     renderProducts();
     renderAdmin();
-    pushProductsToCloud();
 }
 
 // Clear Demo Products
@@ -783,7 +774,6 @@ function clearDemoProducts() {
     localStorage.setItem('mario_products', JSON.stringify(products));
     renderProducts();
     renderAdmin();
-    pushProductsToCloud();
 }
 
 // Export JSON Backup
