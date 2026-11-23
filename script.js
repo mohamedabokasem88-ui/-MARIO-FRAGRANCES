@@ -2,19 +2,19 @@
 let currentLang = 'ar';
 let ownerPassword = localStorage.getItem('mario_owner_password') || 'mario2026';
 
-// Fixed Owner WhatsApp & Mobile Cash (01279001424)
-const DEFAULT_PHONE = '201279001424';
+// Fixed Owner WhatsApp & Mobile Cash (01284955769)
+const DEFAULT_PHONE = '201284955769';
 let savedWhatsApp = localStorage.getItem('mario_owner_whatsapp');
-if (!savedWhatsApp || savedWhatsApp === '201000000000' || savedWhatsApp === '01000000000') {
+if (!savedWhatsApp || savedWhatsApp === '201000000000' || savedWhatsApp === '01000000000' || savedWhatsApp === '201279001424' || savedWhatsApp === '01279001424') {
     savedWhatsApp = DEFAULT_PHONE;
     localStorage.setItem('mario_owner_whatsapp', DEFAULT_PHONE);
 }
 let ownerWhatsApp = savedWhatsApp;
 
 let savedVf = localStorage.getItem('mario_vf_wallet');
-if (!savedVf || savedVf === '01000000000') {
-    savedVf = '01279001424';
-    localStorage.setItem('mario_vf_wallet', '01279001424');
+if (!savedVf || savedVf === '01000000000' || savedVf === '01279001424') {
+    savedVf = '01284955769';
+    localStorage.setItem('mario_vf_wallet', '01284955769');
 }
 let vfWallet = savedVf;
 
@@ -198,7 +198,7 @@ function cleanWhatsAppNumber(phone) {
     if (num.startsWith('01') && num.length === 11) {
         num = '2' + num;
     }
-    return num || '201279001424';
+    return num || '201284955769';
 }
 
 // Dynamically bind the floating WhatsApp button directly to the owner's WhatsApp URL
@@ -440,7 +440,7 @@ function toggleCart(forceOpen = false) {
     else drawer.classList.toggle('hidden');
 }
 
-// Checkout and Submit Order: Records in Owner Dashboard + Forwards to WhatsApp (01279001424)
+// Checkout and Submit Order: Records in Owner Dashboard + Forwards to WhatsApp (01284955769)
 function submitOrder(e) {
     e.preventDefault();
     if (cart.length === 0) {
@@ -494,7 +494,7 @@ function submitOrder(e) {
     localStorage.setItem('mario_orders', JSON.stringify(orders));
     localStorage.setItem('mario_products', JSON.stringify(products));
 
-    // 2. Prepare WhatsApp Order Message for the Store Owner (01279001424)
+    // 2. Prepare WhatsApp Order Message for the Store Owner (01284955769)
     const itemsDetailText = cart.map(i => `• ${i.name_ar} × ${i.qty} = ${i.price * i.qty} EGP`).join('\n');
     const waOrderMessage = `🛍️ *طلب جديد من متجر MARIO Perfumes*
 ----------------------------------------
@@ -620,7 +620,7 @@ function renderAdmin() {
     if (editHeroSub && heroSubDisp) editHeroSub.value = heroSubDisp.innerText;
     if (editVfWallet) editVfWallet.value = vfWallet;
     if (editOwnerPass) editOwnerPass.value = ownerPassword;
-    if (editOwnerWhatsApp) editOwnerWhatsApp.value = ownerWhatsApp === '201279001424' ? '01279001424' : ownerWhatsApp;
+    if (editOwnerWhatsApp) editOwnerWhatsApp.value = ownerWhatsApp === '201284955769' ? '01284955769' : ownerWhatsApp;
 
     updateWhatsAppLinks();
 
