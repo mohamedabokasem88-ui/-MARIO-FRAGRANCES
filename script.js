@@ -18,8 +18,12 @@ if (!savedVf || savedVf === '01000000000' || savedVf === '01279001424') {
 }
 let vfWallet = savedVf;
 
-// Cloud Sync Endpoint (Firebase Realtime Database URL)
-let cloudEndpoint = localStorage.getItem('mario_cloud_endpoint') || '';
+// Pre-configured Live Cloud Sync Endpoint (Firebase Realtime Database URL)
+const DEFAULT_CLOUD_ENDPOINT = 'https://my-amario-default-rtdb.europe-west1.firebasedatabase.app/mario_store_data.json';
+let cloudEndpoint = localStorage.getItem('mario_cloud_endpoint') || DEFAULT_CLOUD_ENDPOINT;
+if (!localStorage.getItem('mario_cloud_endpoint')) {
+    localStorage.setItem('mario_cloud_endpoint', DEFAULT_CLOUD_ENDPOINT);
+}
 
 // LOCKED / IMMUTABLE BRAND IDENTITY & TEXTS (Cannot be modified by anyone)
 const LOCKED_BRAND = Object.freeze({
@@ -1036,17 +1040,21 @@ function pushStoreDataToCloud(showAlert = false) {
     })
     .catch(err => {
         console.error('Cloud Sync Error:', err);
-        if (showAlert) alert('❌ تعذر الاتصال بالسحابة. تأكد من صحة رابط Firebase وأن قواعد القراءة والكتابة (Rules) مفعلة على true.');
+        if (showAlert) alert('❌ تعذر الاتصال بالسحابة. تأكد من صحة رابط Firebase وأن قواعد القراءة والكتابة (Rules) مفعلة.');
     });
 }
 
-// Fetch live store data from cloud for visitors (Ignores any locked brand fields even if tampered in cloud)
+// Fetch live store data from cloud for visitors (If cloud is empty on first run, seed it automatically)
 function fetchStoreDataFromCloud(showAlert = false) {
     if (!cloudEndpoint) return;
     fetch(cloudEndpoint)
         .then(res => res.json())
         .then(data => {
-            if (!data) return;
+            if (!data) {
+                // First time connection when Firebase node is null: push current products & settings
+                pushStoreDataToCloud(false);
+                return;
+            }
             if (Array.isArray(data) && data.length > 0) {
                 products = data;
                 localStorage.setItem('mario_products', JSON.stringify(products));

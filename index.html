@@ -110,23 +110,23 @@
             </div>
         </div>
 
-        <!-- CLOUD SYNC ACTIVATION PANEL (LIVE FOR ALL VISITORS) -->
+        <!-- CLOUD SYNC ACTIVATION PANEL (PRE-CONFIGURED & LIVE FOR ALL VISITORS) -->
         <div class="mb-8 p-5 rounded-2xl bg-gradient-to-l from-zinc-900 to-[#181818] border border-[#D4AF37]/50 shadow-xl">
             <div class="flex flex-wrap justify-between items-center gap-3 mb-3">
                 <div class="flex items-center gap-2.5">
                     <span class="text-2xl">☁️</span>
                     <div>
-                        <h3 class="font-bold text-base gold-text">المزامنة السحابية الحية (لإظهار تعديلاتك لجميع الزوار فوراً)</h3>
-                        <p class="text-xs text-zinc-400">اربط المتجر برابط قاعدة بيانات Firebase المجانية، وأي عطر أو سعر تعدله سيظهر لكل الزبائن في نفس اللحظة.</p>
+                        <h3 class="font-bold text-base gold-text">المزامنة السحابية الحية (مرتبطة تلقائياً بقاعدة بيانات my-amario)</h3>
+                        <p class="text-xs text-zinc-400">أي عطر أو سعر تعدله يظهر لكل الزبائن على هواتفهم في نفس اللحظة تلقائياً.</p>
                     </div>
                 </div>
-                <span id="cloud-sync-status" class="text-xs px-3 py-1 rounded-full border border-zinc-700 bg-zinc-900 text-zinc-400">
-                    ⚪ غير متصل بالسحابة (تخزين محلي فقط)
+                <span id="cloud-sync-status" class="text-xs px-3 py-1 rounded-full border border-emerald-600 bg-emerald-950/60 text-emerald-300 flex items-center gap-1.5">
+                    <span>🟢</span> <span>متصل بالسحابة (يظهر للزوار فوراً)</span>
                 </span>
             </div>
 
             <div class="flex flex-col sm:flex-row gap-2.5 mt-3">
-                <input id="cloud-endpoint-input" type="url" dir="ltr" placeholder="https://your-project-id-default-rtdb.firebaseio.com/" class="flex-grow bg-black border border-zinc-700 focus:border-[#D4AF37] rounded-xl px-4 py-2.5 text-xs font-mono text-emerald-300 outline-none">
+                <input id="cloud-endpoint-input" type="url" dir="ltr" value="https://my-amario-default-rtdb.europe-west1.firebasedatabase.app/mario_store_data.json" class="flex-grow bg-black border border-zinc-700 focus:border-[#D4AF37] rounded-xl px-4 py-2.5 text-xs font-mono text-emerald-300 outline-none">
                 <button type="button" onclick="saveCloudEndpoint()" class="gold-bg text-black font-bold text-xs px-5 py-2.5 rounded-xl hover:opacity-90 transition whitespace-nowrap">
                     🔗 حفظ وتفعيل المزامنة
                 </button>
