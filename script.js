@@ -21,36 +21,50 @@ let vfWallet = savedVf;
 // Cloud Sync Endpoint (Firebase Realtime Database URL)
 let cloudEndpoint = localStorage.getItem('mario_cloud_endpoint') || '';
 
-// Editable Site Texts (No-Code Storefront Content)
+// LOCKED / IMMUTABLE BRAND IDENTITY & TEXTS (Cannot be modified by anyone)
+const LOCKED_BRAND = Object.freeze({
+    brandLogo: 'MARIO',
+    heroTag: 'عطور مصممة لتدوم',
+    heroTitle: 'اكتشف توقيعك العطري مع MARIO',
+    heroCta: 'تسوق المجموعة الآن',
+    collectionTitle: 'مجموعة عطور MARIO',
+    footerSub: '© 2026 MARIO. All Rights Reserved. Cash on Delivery & Mobile Cash Available Across Egypt.'
+});
+
+// Editable Storefront Settings (Hero Description & Smart Upsell only)
 const defaultTexts = {
-    brandLogo: localStorage.getItem('mario_brand_logo') || 'MARIO',
-    heroTag: localStorage.getItem('mario_hero_tag') || 'عطور مصممة لتدوم',
-    heroTitle: localStorage.getItem('mario_hero_title') || 'اكتشف توقيعك العطري مع MARIO',
     heroSub: localStorage.getItem('mario_hero_sub') || 'تركيبات عطرية فريدة بثبات عالي وفوحان استثنائي، تصلك لباب بيتك مع الدفع عند الاستلام أو كاش.',
-    heroCta: localStorage.getItem('mario_hero_cta') || 'تسوق المجموعة الآن',
-    collectionTitle: localStorage.getItem('mario_collection_title') || 'مجموعة عطور MARIO',
-    footerSub: localStorage.getItem('mario_footer_sub') || '© 2026 MARIO. All Rights Reserved. Cash on Delivery & Mobile Cash Available Across Egypt.',
     upsellName: localStorage.getItem('mario_upsell_name') || 'عينة استكشاف MARIO (15ml)',
     upsellPrice: Number(localStorage.getItem('mario_upsell_price')) || 150
 };
 
 let savedThemeColor = localStorage.getItem('mario_theme_color') || '#D4AF37';
 
-// Apply saved theme color and texts immediately
+// Apply locked brand texts + editable settings immediately
 function applyCustomTexts() {
     document.documentElement.style.setProperty('--primary-gold', savedThemeColor);
-    const map = {
-        'nav-brand-logo': defaultTexts.brandLogo,
-        'hero-tag-display': defaultTexts.heroTag,
-        'hero-title-display': defaultTexts.heroTitle,
+    
+    // Enforce locked texts
+    const lockedMap = {
+        'nav-brand-logo': LOCKED_BRAND.brandLogo,
+        'hero-tag-display': LOCKED_BRAND.heroTag,
+        'hero-title-display': LOCKED_BRAND.heroTitle,
+        'hero-cta-display': LOCKED_BRAND.heroCta,
+        'collection-title-display': LOCKED_BRAND.collectionTitle,
+        'footer-sub-display': LOCKED_BRAND.footerSub
+    };
+    Object.entries(lockedMap).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = val;
+    });
+
+    // Apply editable texts
+    const editableMap = {
         'hero-sub-display': defaultTexts.heroSub,
-        'hero-cta-display': defaultTexts.heroCta,
-        'collection-title-display': defaultTexts.collectionTitle,
-        'footer-sub-display': defaultTexts.footerSub,
         'upsell-name': defaultTexts.upsellName,
         'upsell-price-display': `${defaultTexts.upsellPrice} EGP`
     };
-    Object.entries(map).forEach(([id, val]) => {
+    Object.entries(editableMap).forEach(([id, val]) => {
         const el = document.getElementById(id);
         if (el) el.innerText = val;
     });
@@ -149,18 +163,18 @@ const i18n = {
         btn_confirm_order: "تأكيد الطلب وإرسال الفاتورة لواتساب المتجر",
         chat_btn: "خدمة العملاء (واتساب)",
         admin_title: "لوحة تحكم المالك (Owner Dashboard)",
-        admin_sub: "تحكم كامل بدون كود: عدّل النصوص، العطور، الأسعار، الصور، والطلبات ومزامنتها سحابياً للزوار",
+        admin_sub: "إدارة العطور والأسعار والطلبات ومزامنتها سحابياً للزوار (هوية البراند محمية وثابتة)",
         back_store: "العودة للمتجر ←",
         btn_logout: "تسجيل الخروج",
         stat_sales: "إجمالي المبيعات",
         stat_orders: "عدد الطلبات",
         stat_stock: "إجمالي الزجاجات بالمخزن",
-        ui_customizer_title: "تعديل نصوص الموقع، الواتساب والمحفظة (بدون كود)",
+        ui_customizer_title: "إعدادات المتجر، الواتساب والمحفظة",
         lbl_owner_whatsapp: "📱 رقم واتساب المالك لاستقبال الطلبات وخدمة العملاء",
         lbl_owner_pass: "تغيير كلمة مرور المالك (Owner Password)",
         lbl_vf_wallet: "رقم محفظة الدفع الإلكتروني كاش (Cash Wallet)",
         lbl_accent_color: "لون هوية البراند (Accent Color)",
-        btn_save_ui: "حفظ ونشر جميع النصوص والإعدادات",
+        btn_save_ui: "حفظ ونشر الإعدادات",
         add_product_title: "إضافة عطر جديد للمتجر",
         btn_add_perfume: "إضافة العطر",
         orders_list_title: "الطلبات الواردة من الزبائن (خانة المالك)",
@@ -187,18 +201,18 @@ const i18n = {
         btn_confirm_order: "Confirm Order & Send to Store WhatsApp",
         chat_btn: "WhatsApp Support",
         admin_title: "Owner Dashboard",
-        admin_sub: "Full No-Code Control & Live Cloud Sync for all visitors",
+        admin_sub: "Manage perfumes, prices, orders & live cloud sync (Brand identity is locked)",
         back_store: "← Back to Store",
         btn_logout: "Logout",
         stat_sales: "Total Revenue",
         stat_orders: "Total Orders",
         stat_stock: "Bottles in Stock",
-        ui_customizer_title: "Edit Website Texts, WhatsApp & Wallet (No-Code)",
+        ui_customizer_title: "Store Settings, WhatsApp & Wallet",
         lbl_owner_whatsapp: "Owner & Support WhatsApp Number",
         lbl_owner_pass: "Change Owner Password",
         lbl_vf_wallet: "Cash Wallet Number",
         lbl_accent_color: "Brand Accent Color",
-        btn_save_ui: "Save & Publish All Texts & Settings",
+        btn_save_ui: "Save & Publish Settings",
         add_product_title: "Add New Perfume",
         btn_add_perfume: "Add Perfume",
         orders_list_title: "Incoming Customer Orders (Owner Box)",
@@ -328,7 +342,7 @@ function renderProducts(filter = 'all') {
             ? `<img src="${product.image}" alt="${name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">`
             : `<div class="w-20 h-28 border-2 border-[#D4AF37]/70 rounded-t-lg rounded-b-md flex flex-col items-center justify-center bg-black/50 backdrop-blur-sm shadow-2xl group-hover:scale-105 transition">
                    <div class="w-6 h-4 bg-[#D4AF37] -mt-6 mb-3 rounded-t-sm"></div>
-                   <span class="brand-font text-xs tracking-widest gold-text font-bold">${defaultTexts.brandLogo}</span>
+                   <span class="brand-font text-xs tracking-widest gold-text font-bold">${LOCKED_BRAND.brandLogo}</span>
                    <span class="text-[9px] text-zinc-400 mt-1">${product.size || '100ml'}</span>
                </div>`;
 
@@ -513,7 +527,7 @@ function submitOrder(e) {
     pushStoreDataToCloud();
 
     const itemsDetailText = cart.map(i => `• ${i.name_ar} × ${i.qty} = ${i.price * i.qty} EGP`).join('\n');
-    const waOrderMessage = `🛍️ *طلب جديد من متجر ${defaultTexts.brandLogo} Perfumes*
+    const waOrderMessage = `🛍️ *طلب جديد من متجر ${LOCKED_BRAND.brandLogo} Perfumes*
 ----------------------------------------
 📦 *رقم الطلب:* ${newOrder.id}
 📅 *التاريخ:* ${formattedDate}
@@ -607,7 +621,7 @@ function clearAllOrders() {
 // Message Customer on WhatsApp
 function contactCustomerWhatsApp(phone, orderId) {
     const num = cleanWhatsAppNumber(phone);
-    const msg = encodeURIComponent(`مرحباً بك من متجر ${defaultTexts.brandLogo} للعطور! بخصوص طلبك رقم ${orderId}، نود إخبارك بأنه تم استلامه وجاري تجهيزه.`);
+    const msg = encodeURIComponent(`مرحباً بك من متجر ${LOCKED_BRAND.brandLogo} للعطور! بخصوص طلبك رقم ${orderId}، نود إخبارك بأنه تم استلامه وجاري تجهيزه.`);
     window.open(`https://api.whatsapp.com/send?phone=${num}&text=${msg}`, '_blank');
 }
 
@@ -643,17 +657,11 @@ function renderAdmin() {
     const cloudInput = document.getElementById('cloud-endpoint-input');
     if (cloudInput) cloudInput.value = cloudEndpoint;
 
-    // Populate all editable text inputs
+    // Populate only permitted editable fields
     const fieldMap = {
-        'edit-brand-logo': defaultTexts.brandLogo,
-        'edit-hero-tag': defaultTexts.heroTag,
-        'edit-hero-title': defaultTexts.heroTitle,
         'edit-hero-sub': defaultTexts.heroSub,
-        'edit-hero-cta': defaultTexts.heroCta,
-        'edit-collection-title': defaultTexts.collectionTitle,
         'edit-upsell-name': defaultTexts.upsellName,
         'edit-upsell-price': defaultTexts.upsellPrice,
-        'edit-footer-sub': defaultTexts.footerSub,
         'edit-vf-wallet': vfWallet,
         'edit-owner-pass': ownerPassword,
         'edit-owner-whatsapp': ownerWhatsApp === '201284955769' ? '01284955769' : ownerWhatsApp
@@ -855,7 +863,7 @@ function changeThemeColor(hex) {
     pushStoreDataToCloud();
 }
 
-// Save All Storefront Texts, WhatsApp, Security & Wallet Settings (No-Code!)
+// Save Permitted Store Settings (Ignores any locked brand identity fields)
 function saveStoreSettings() {
     const newWhatsApp = document.getElementById('edit-owner-whatsapp').value.trim();
     const newPass = document.getElementById('edit-owner-pass').value.trim();
@@ -877,25 +885,17 @@ function saveStoreSettings() {
         if (vfDisp) vfDisp.innerText = vfWallet;
     }
 
-    // Save all editable website texts
-    const textInputs = [
-        { id: 'edit-brand-logo', key: 'brandLogo', storage: 'mario_brand_logo' },
-        { id: 'edit-hero-tag', key: 'heroTag', storage: 'mario_hero_tag' },
-        { id: 'edit-hero-title', key: 'heroTitle', storage: 'mario_hero_title' },
-        { id: 'edit-hero-sub', key: 'heroSub', storage: 'mario_hero_sub' },
-        { id: 'edit-hero-cta', key: 'heroCta', storage: 'mario_hero_cta' },
-        { id: 'edit-collection-title', key: 'collectionTitle', storage: 'mario_collection_title' },
-        { id: 'edit-upsell-name', key: 'upsellName', storage: 'mario_upsell_name' },
-        { id: 'edit-footer-sub', key: 'footerSub', storage: 'mario_footer_sub' }
-    ];
+    const heroSubEl = document.getElementById('edit-hero-sub');
+    if (heroSubEl && heroSubEl.value.trim()) {
+        defaultTexts.heroSub = heroSubEl.value.trim();
+        localStorage.setItem('mario_hero_sub', defaultTexts.heroSub);
+    }
 
-    textInputs.forEach(item => {
-        const el = document.getElementById(item.id);
-        if (el && el.value.trim()) {
-            defaultTexts[item.key] = el.value.trim();
-            localStorage.setItem(item.storage, defaultTexts[item.key]);
-        }
-    });
+    const upsellNameEl = document.getElementById('edit-upsell-name');
+    if (upsellNameEl && upsellNameEl.value.trim()) {
+        defaultTexts.upsellName = upsellNameEl.value.trim();
+        localStorage.setItem('mario_upsell_name', defaultTexts.upsellName);
+    }
 
     const upsellPriceEl = document.getElementById('edit-upsell-price');
     if (upsellPriceEl && upsellPriceEl.value !== '') {
@@ -907,10 +907,10 @@ function saveStoreSettings() {
     updateWhatsAppLinks();
     renderProducts();
     pushStoreDataToCloud();
-    alert(currentLang === 'ar' ? 'تم حفظ جميع النصوص والإعدادات ومزامنتها بنجاح!' : 'All texts and settings saved & synced successfully!');
+    alert(currentLang === 'ar' ? 'تم حفظ الإعدادات ومزامنتها بنجاح!' : 'Settings saved & synced successfully!');
 }
 
-// Import JSON Backup
+// Import JSON Backup (Respects locked brand identity)
 function importBackup(e) {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
@@ -924,24 +924,17 @@ function importBackup(e) {
                 localStorage.setItem('mario_products', JSON.stringify(products));
             }
             if (data.texts) {
-                Object.assign(defaultTexts, data.texts);
-                localStorage.setItem('mario_brand_logo', defaultTexts.brandLogo);
-                localStorage.setItem('mario_hero_tag', defaultTexts.heroTag);
-                localStorage.setItem('mario_hero_title', defaultTexts.heroTitle);
-                localStorage.setItem('mario_hero_sub', defaultTexts.heroSub);
-                localStorage.setItem('mario_hero_cta', defaultTexts.heroCta);
-                localStorage.setItem('mario_collection_title', defaultTexts.collectionTitle);
-                localStorage.setItem('mario_footer_sub', defaultTexts.footerSub);
-                localStorage.setItem('mario_upsell_name', defaultTexts.upsellName);
-                localStorage.setItem('mario_upsell_price', defaultTexts.upsellPrice);
-            } else {
-                if (data.heroTitle) {
-                    defaultTexts.heroTitle = data.heroTitle;
-                    localStorage.setItem('mario_hero_title', defaultTexts.heroTitle);
-                }
-                if (data.heroSub) {
-                    defaultTexts.heroSub = data.heroSub;
+                if (data.texts.heroSub) {
+                    defaultTexts.heroSub = data.texts.heroSub;
                     localStorage.setItem('mario_hero_sub', defaultTexts.heroSub);
+                }
+                if (data.texts.upsellName) {
+                    defaultTexts.upsellName = data.texts.upsellName;
+                    localStorage.setItem('mario_upsell_name', defaultTexts.upsellName);
+                }
+                if (data.texts.upsellPrice !== undefined) {
+                    defaultTexts.upsellPrice = Number(data.texts.upsellPrice);
+                    localStorage.setItem('mario_upsell_price', defaultTexts.upsellPrice);
                 }
             }
             if (data.themeColor) {
@@ -959,7 +952,7 @@ function importBackup(e) {
             renderProducts();
             if (isOwnerAuthenticated()) renderAdmin();
             pushStoreDataToCloud();
-            alert('تم استيراد جميع المنتجات والنصوص والإعدادات ومزامنتها بنجاح!');
+            alert('تم استيراد المنتجات والإعدادات ومزامنتها بنجاح!');
         } catch (err) {
             alert('عفواً، الملف الذي اخترته غير صالح أو به خطأ في التنسيق.');
         }
@@ -968,16 +961,13 @@ function importBackup(e) {
     e.target.value = '';
 }
 
-// Copy Updated Full Store Code (Texts + Products) for Static Hosting
+// Copy Updated Products Code for Static Hosting
 function copyProductsCode() {
-    const code = `// Copy & Paste into script.js to make changes permanent without cloud
-const defaultTexts = ${JSON.stringify(defaultTexts, null, 2)};
-
-const defaultProducts = ${JSON.stringify(products, null, 2)};`;
+    const code = `const defaultProducts = ${JSON.stringify(products, null, 2)};`;
     navigator.clipboard.writeText(code).then(() => {
-        alert('تم نسخ كود النصوص والمنتجات الحالي بالكامل إلى الحافظة!\nيمكنك لصقه في ملف script.js في أي وقت.');
+        alert('تم نسخ كود المنتجات الحالي إلى الحافظة!\nيمكنك لصقه في ملف script.js في أي وقت.');
     }).catch(() => {
-        prompt('انسخ الكود يدوياً:', code);
+        prompt('انسخ كود المنتجات يدوياً:', code);
     });
 }
 
@@ -1023,7 +1013,7 @@ function updateCloudStatusBadge() {
     }
 }
 
-// Push all store data (products + texts + theme + wallet + whatsapp) to cloud
+// Push permitted store data to cloud (Locked texts are never overwritten)
 function pushStoreDataToCloud(showAlert = false) {
     if (!cloudEndpoint) return;
     const payload = {
@@ -1050,14 +1040,13 @@ function pushStoreDataToCloud(showAlert = false) {
     });
 }
 
-// Fetch live store data from cloud for visitors
+// Fetch live store data from cloud for visitors (Ignores any locked brand fields even if tampered in cloud)
 function fetchStoreDataFromCloud(showAlert = false) {
     if (!cloudEndpoint) return;
     fetch(cloudEndpoint)
         .then(res => res.json())
         .then(data => {
             if (!data) return;
-            // Support both legacy array format and full store object format
             if (Array.isArray(data) && data.length > 0) {
                 products = data;
                 localStorage.setItem('mario_products', JSON.stringify(products));
@@ -1067,16 +1056,18 @@ function fetchStoreDataFromCloud(showAlert = false) {
                     localStorage.setItem('mario_products', JSON.stringify(products));
                 }
                 if (data.texts) {
-                    Object.assign(defaultTexts, data.texts);
-                    localStorage.setItem('mario_brand_logo', defaultTexts.brandLogo);
-                    localStorage.setItem('mario_hero_tag', defaultTexts.heroTag);
-                    localStorage.setItem('mario_hero_title', defaultTexts.heroTitle);
-                    localStorage.setItem('mario_hero_sub', defaultTexts.heroSub);
-                    localStorage.setItem('mario_hero_cta', defaultTexts.heroCta);
-                    localStorage.setItem('mario_collection_title', defaultTexts.collectionTitle);
-                    localStorage.setItem('mario_footer_sub', defaultTexts.footerSub);
-                    localStorage.setItem('mario_upsell_name', defaultTexts.upsellName);
-                    localStorage.setItem('mario_upsell_price', defaultTexts.upsellPrice);
+                    if (data.texts.heroSub) {
+                        defaultTexts.heroSub = data.texts.heroSub;
+                        localStorage.setItem('mario_hero_sub', defaultTexts.heroSub);
+                    }
+                    if (data.texts.upsellName) {
+                        defaultTexts.upsellName = data.texts.upsellName;
+                        localStorage.setItem('mario_upsell_name', defaultTexts.upsellName);
+                    }
+                    if (data.texts.upsellPrice !== undefined) {
+                        defaultTexts.upsellPrice = Number(data.texts.upsellPrice);
+                        localStorage.setItem('mario_upsell_price', defaultTexts.upsellPrice);
+                    }
                 }
                 if (data.themeColor) {
                     savedThemeColor = data.themeColor;
@@ -1125,10 +1116,10 @@ function toggleLanguage() {
         const heroCtaEl = document.getElementById('hero-cta-display');
         const colTitleEl = document.getElementById('collection-title-display');
         if (heroTagEl) heroTagEl.innerText = "SCENTS CRAFTED TO LAST";
-        if (heroTitleEl) heroTitleEl.innerText = `Discover Your Signature Scent with ${defaultTexts.brandLogo}`;
+        if (heroTitleEl) heroTitleEl.innerText = "Discover Your Signature Scent with MARIO";
         if (heroSubEl) heroSubEl.innerText = "Unique long-lasting luxury fragrances delivered to your doorstep with Cash on Delivery or Mobile Cash.";
         if (heroCtaEl) heroCtaEl.innerText = "Shop Collection";
-        if (colTitleEl) colTitleEl.innerText = `${defaultTexts.brandLogo} Signature Collection`;
+        if (colTitleEl) colTitleEl.innerText = "MARIO Signature Collection";
     } else {
         applyCustomTexts();
     }
@@ -1140,6 +1131,8 @@ function toggleLanguage() {
 
 // Initial Boot
 document.addEventListener('DOMContentLoaded', () => {
+    // Clean up any previously stored overrides for locked brand identity
+    ['mario_brand_logo', 'mario_hero_tag', 'mario_hero_title', 'mario_hero_cta', 'mario_collection_title', 'mario_footer_sub'].forEach(k => localStorage.removeItem(k));
     applyCustomTexts();
     updateWhatsAppLinks();
     renderProducts();

@@ -13,7 +13,7 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- Navbar -->
+    <!-- Navbar (Locked Brand Logo) -->
     <nav class="sticky top-0 z-40 bg-black/90 backdrop-blur-md border-b border-zinc-800 px-4 md:px-10 py-4">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <a href="#" onclick="switchView('store')" id="nav-brand-logo" class="text-2xl md:text-3xl font-bold tracking-widest brand-font gold-text">
@@ -47,6 +47,7 @@
     <main id="store-view" class="flex-grow">
         <section class="relative py-20 px-4 text-center bg-gradient-to-b from-zinc-900 to-[#0F0F0F] border-b border-zinc-800/60">
             <div class="max-w-3xl mx-auto">
+                <!-- Locked Tag, Title, and CTA Button -->
                 <span id="hero-tag-display" class="text-xs uppercase tracking-[0.3em] gold-text block mb-3">عطور مصممة لتدوم</span>
                 <h1 id="hero-title-display" class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
                     اكتشف توقيعك العطري مع MARIO
@@ -62,6 +63,7 @@
 
         <section id="products-section" class="max-w-7xl mx-auto py-16 px-4 md:px-10">
             <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+                <!-- Locked Collection Heading -->
                 <h2 id="collection-title-display" class="text-2xl md:text-3xl font-bold">مجموعة عطور MARIO</h2>
                 
                 <div class="flex gap-2 flex-wrap justify-center">
@@ -85,7 +87,7 @@
                     <span>👑</span>
                     <span data-i18n="admin_title">لوحة تحكم المالك (Owner Dashboard)</span>
                 </h1>
-                <p class="text-zinc-400 text-sm" data-i18n="admin_sub">تحكم كامل بدون كود: عدّل النصوص، العطور، الأسعار، الصور، والطلبات ومزامنتها سحابياً للزوار</p>
+                <p class="text-zinc-400 text-sm" data-i18n="admin_sub">إدارة العطور والأسعار والطلبات ومزامنتها سحابياً للزوار (هوية البراند محمية وثابتة)</p>
             </div>
             <div class="flex gap-2 flex-wrap items-center">
                 <button onclick="exportBackup()" class="text-xs bg-emerald-900/50 text-emerald-300 border border-emerald-700 px-3 py-2 rounded-lg hover:bg-emerald-900 transition">
@@ -98,7 +100,7 @@
                 </label>
                 <button onclick="copyProductsCode()" class="text-xs bg-zinc-800 text-zinc-300 border border-zinc-700 px-3 py-2 rounded-lg hover:bg-zinc-700 transition flex items-center gap-1">
                     <span>📋</span>
-                    <span>نسخ كود التعديلات</span>
+                    <span>نسخ كود المنتجات</span>
                 </button>
                 <button onclick="switchView('store')" class="text-sm border border-zinc-700 px-4 py-2 rounded-lg hover:bg-zinc-800" data-i18n="back_store">العودة للمتجر ←</button>
                 <button onclick="adminLogout()" class="text-sm bg-red-950/60 text-red-400 border border-red-800/80 px-4 py-2 rounded-lg hover:bg-red-900/80 transition flex items-center gap-1.5">
@@ -115,7 +117,7 @@
                     <span class="text-2xl">☁️</span>
                     <div>
                         <h3 class="font-bold text-base gold-text">المزامنة السحابية الحية (لإظهار تعديلاتك لجميع الزوار فوراً)</h3>
-                        <p class="text-xs text-zinc-400">اربط المتجر برابط قاعدة بيانات Firebase المجانية، وأي نص أو عطر أو سعر تعدله سيظهر لكل الزبائن في نفس اللحظة.</p>
+                        <p class="text-xs text-zinc-400">اربط المتجر برابط قاعدة بيانات Firebase المجانية، وأي عطر أو سعر تعدله سيظهر لكل الزبائن في نفس اللحظة.</p>
                     </div>
                 </div>
                 <span id="cloud-sync-status" class="text-xs px-3 py-1 rounded-full border border-zinc-700 bg-zinc-900 text-zinc-400">
@@ -166,85 +168,58 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- No-Code Storefront Text Editor, Security, WhatsApp & Cash Settings -->
-            <div class="bg-[#1A1A1A] p-6 rounded-2xl border border-zinc-800">
-                <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                    <span>✏️</span> <span data-i18n="ui_customizer_title">تعديل نصوص الموقع، الواتساب والمحفظة (بدون كود)</span>
-                </h3>
-                <div class="space-y-3.5 max-h-[540px] overflow-y-auto pr-1">
-                    <div class="grid grid-cols-2 gap-3">
+            <!-- Store Settings (Locked Brand Identity fields removed completely) -->
+            <div class="bg-[#1A1A1A] p-6 rounded-2xl border border-zinc-800 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
+                        <span>⚙️</span> <span data-i18n="ui_customizer_title">إعدادات المتجر، الواتساب والمحفظة</span>
+                    </h3>
+                    <p class="text-xs text-zinc-400 mb-4 bg-zinc-900/80 border border-zinc-800 px-3 py-2 rounded-lg">
+                        🔒 اسم البراند (MARIO)، الشعار، عنوان البنر، زر التسوق، عنوان قسم العطور، ونص أسفل الصفحة ثابتة ومحمية ضد التعديل.
+                    </p>
+                    <div class="space-y-3.5">
                         <div>
-                            <label class="block text-xs text-zinc-400 mb-1">اسم البراند / الشعار العلوي</label>
-                            <input id="edit-brand-logo" type="text" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm font-bold gold-text">
+                            <label class="block text-xs text-zinc-400 mb-1">الوصف أسفل العنوان الرئيسي</label>
+                            <textarea id="edit-hero-sub" rows="2" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm"></textarea>
                         </div>
+
+                        <div class="p-3 bg-zinc-900/80 rounded-xl border border-zinc-800 space-y-2">
+                            <span class="block text-xs text-amber-300 font-bold">✨ إعدادات الاقتراح الذكي داخل السلة</span>
+                            <div class="grid grid-cols-3 gap-2">
+                                <input id="edit-upsell-name" type="text" placeholder="اسم العينة المقترحة" class="col-span-2 bg-black border border-zinc-700 rounded-lg px-3 py-1.5 text-xs">
+                                <input id="edit-upsell-price" type="number" placeholder="السعر EGP" class="bg-black border border-zinc-700 rounded-lg px-3 py-1.5 text-xs">
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-zinc-900/90 rounded-xl border border-[#D4AF37]/40 space-y-2">
+                            <label class="block text-xs text-amber-300 font-bold" data-i18n="lbl_owner_whatsapp">📱 رقم واتساب المالك لاستقبال الطلبات وخدمة العملاء</label>
+                            <input id="edit-owner-whatsapp" type="text" value="01284955769" placeholder="01284955769" class="w-full bg-black border border-zinc-700 rounded-lg px-3 py-2 text-sm font-mono text-emerald-400 font-bold focus:border-[#D4AF37] outline-none">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs text-zinc-400 mb-1" data-i18n="lbl_vf_wallet">رقم محفظة الكاش</label>
+                                <input id="edit-vf-wallet" type="text" value="01284955769" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-zinc-400 mb-1" data-i18n="lbl_owner_pass">كلمة مرور المالك</label>
+                                <input id="edit-owner-pass" type="text" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm font-mono">
+                            </div>
+                        </div>
+
                         <div>
-                            <label class="block text-xs text-zinc-400 mb-1">الشعار الصغير أعلى العنوان</label>
-                            <input id="edit-hero-tag" type="text" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs text-zinc-400 mb-1">عنوان البنر الرئيسي</label>
-                        <input id="edit-hero-title" type="text" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs text-zinc-400 mb-1">الوصف أسفل العنوان الرئيسي</label>
-                        <textarea id="edit-hero-sub" rows="2" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm"></textarea>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs text-zinc-400 mb-1">نص زر التسوق الرئيسي</label>
-                            <input id="edit-hero-cta" type="text" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-zinc-400 mb-1">عنوان قسم العطور</label>
-                            <input id="edit-collection-title" type="text" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
-                        </div>
-                    </div>
-
-                    <div class="p-3 bg-zinc-900/80 rounded-xl border border-zinc-800 space-y-2">
-                        <span class="block text-xs text-amber-300 font-bold">✨ إعدادات الاقتراح الذكي داخل السلة</span>
-                        <div class="grid grid-cols-3 gap-2">
-                            <input id="edit-upsell-name" type="text" placeholder="اسم العينة المقترحة" class="col-span-2 bg-black border border-zinc-700 rounded-lg px-3 py-1.5 text-xs">
-                            <input id="edit-upsell-price" type="number" placeholder="السعر EGP" class="bg-black border border-zinc-700 rounded-lg px-3 py-1.5 text-xs">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs text-zinc-400 mb-1">نص أسفل الصفحة (Footer)</label>
-                        <input id="edit-footer-sub" type="text" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-xs">
-                    </div>
-
-                    <div class="p-3 bg-zinc-900/90 rounded-xl border border-[#D4AF37]/40 space-y-2">
-                        <label class="block text-xs text-amber-300 font-bold" data-i18n="lbl_owner_whatsapp">📱 رقم واتساب المالك لاستقبال الطلبات وخدمة العملاء</label>
-                        <input id="edit-owner-whatsapp" type="text" value="01284955769" placeholder="01284955769" class="w-full bg-black border border-zinc-700 rounded-lg px-3 py-2 text-sm font-mono text-emerald-400 font-bold focus:border-[#D4AF37] outline-none">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs text-zinc-400 mb-1" data-i18n="lbl_vf_wallet">رقم محفظة الكاش</label>
-                            <input id="edit-vf-wallet" type="text" value="01284955769" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm font-mono">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-zinc-400 mb-1" data-i18n="lbl_owner_pass">كلمة مرور المالك</label>
-                            <input id="edit-owner-pass" type="text" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm font-mono">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs text-zinc-400 mb-1" data-i18n="lbl_accent_color">لون هوية البراند (Accent Color)</label>
-                        <div class="flex gap-3 mt-1">
-                            <button type="button" onclick="changeThemeColor('#D4AF37')" class="w-8 h-8 rounded-full bg-[#D4AF37] border-2 border-white"></button>
-                            <button type="button" onclick="changeThemeColor('#E5E5E5')" class="w-8 h-8 rounded-full bg-[#E5E5E5] border border-zinc-600"></button>
-                            <button type="button" onclick="changeThemeColor('#C084FC')" class="w-8 h-8 rounded-full bg-[#C084FC] border border-zinc-600"></button>
-                            <button type="button" onclick="changeThemeColor('#34D399')" class="w-8 h-8 rounded-full bg-[#34D399] border border-zinc-600"></button>
-                            <button type="button" onclick="changeThemeColor('#F87171')" class="w-8 h-8 rounded-full bg-[#F87171] border border-zinc-600"></button>
+                            <label class="block text-xs text-zinc-400 mb-1" data-i18n="lbl_accent_color">لون هوية البراند (Accent Color)</label>
+                            <div class="flex gap-3 mt-1">
+                                <button type="button" onclick="changeThemeColor('#D4AF37')" class="w-8 h-8 rounded-full bg-[#D4AF37] border-2 border-white"></button>
+                                <button type="button" onclick="changeThemeColor('#E5E5E5')" class="w-8 h-8 rounded-full bg-[#E5E5E5] border border-zinc-600"></button>
+                                <button type="button" onclick="changeThemeColor('#C084FC')" class="w-8 h-8 rounded-full bg-[#C084FC] border border-zinc-600"></button>
+                                <button type="button" onclick="changeThemeColor('#34D399')" class="w-8 h-8 rounded-full bg-[#34D399] border border-zinc-600"></button>
+                                <button type="button" onclick="changeThemeColor('#F87171')" class="w-8 h-8 rounded-full bg-[#F87171] border border-zinc-600"></button>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <button type="button" onclick="saveStoreSettings()" class="w-full mt-4 gold-bg text-black font-bold text-sm px-5 py-3 rounded-xl hover:opacity-90 transition shadow-md" data-i18n="btn_save_ui">حفظ ونشر جميع النصوص والإعدادات</button>
+                <button type="button" onclick="saveStoreSettings()" class="w-full mt-4 gold-bg text-black font-bold text-sm px-5 py-3 rounded-xl hover:opacity-90 transition shadow-md" data-i18n="btn_save_ui">حفظ ونشر الإعدادات</button>
             </div>
 
             <!-- Add / Edit Perfume Form -->
@@ -442,7 +417,7 @@
         </a>
     </div>
 
-    <!-- Footer with English-only Developer Signature -->
+    <!-- Locked Footer with English-only Developer Signature -->
     <footer class="border-t border-zinc-800/80 bg-black/60 py-8 px-4 text-center">
         <p class="brand-font text-lg gold-text mb-1 tracking-widest">MARIO PERFUMES</p>
         <p id="footer-sub-display" class="text-zinc-500 text-xs mb-3">© 2026 MARIO. All Rights Reserved. Cash on Delivery & Mobile Cash Available Across Egypt.</p>
