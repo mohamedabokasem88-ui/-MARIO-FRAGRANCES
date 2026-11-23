@@ -18,18 +18,45 @@ if (!savedVf || savedVf === '01000000000' || savedVf === '01279001424') {
 }
 let vfWallet = savedVf;
 
-let savedHeroTitle = localStorage.getItem('mario_hero_title') || 'اكتشف توقيعك العطري مع MARIO';
-let savedHeroSub = localStorage.getItem('mario_hero_sub') || 'تركيبات عطرية فريدة بثبات عالي وفوحان استثنائي ؛ متوفر 10ml , 30ml , 50ml , 100ml';
+// Cloud Sync Endpoint (Firebase Realtime Database URL)
+let cloudEndpoint = localStorage.getItem('mario_cloud_endpoint') || '';
+
+// Editable Site Texts (No-Code Storefront Content)
+const defaultTexts = {
+    brandLogo: localStorage.getItem('mario_brand_logo') || 'MARIO',
+    heroTag: localStorage.getItem('mario_hero_tag') || 'عطور مصممة لتدوم',
+    heroTitle: localStorage.getItem('mario_hero_title') || 'اكتشف توقيعك العطري مع MARIO',
+    heroSub: localStorage.getItem('mario_hero_sub') || 'تركيبات عطرية فريدة بثبات عالي وفوحان استثنائي، تصلك لباب بيتك مع الدفع عند الاستلام أو كاش.',
+    heroCta: localStorage.getItem('mario_hero_cta') || 'تسوق المجموعة الآن',
+    collectionTitle: localStorage.getItem('mario_collection_title') || 'مجموعة عطور MARIO',
+    footerSub: localStorage.getItem('mario_footer_sub') || '© 2026 MARIO. All Rights Reserved. Cash on Delivery & Mobile Cash Available Across Egypt.',
+    upsellName: localStorage.getItem('mario_upsell_name') || 'عينة استكشاف MARIO (15ml)',
+    upsellPrice: Number(localStorage.getItem('mario_upsell_price')) || 150
+};
+
 let savedThemeColor = localStorage.getItem('mario_theme_color') || '#D4AF37';
 
-// Apply saved theme color and hero content
-document.documentElement.style.setProperty('--primary-gold', savedThemeColor);
-const heroTitleEl = document.getElementById('hero-title-display');
-const heroSubEl = document.getElementById('hero-sub-display');
-if (heroTitleEl) heroTitleEl.innerText = savedHeroTitle;
-if (heroSubEl) heroSubEl.innerText = savedHeroSub;
+// Apply saved theme color and texts immediately
+function applyCustomTexts() {
+    document.documentElement.style.setProperty('--primary-gold', savedThemeColor);
+    const map = {
+        'nav-brand-logo': defaultTexts.brandLogo,
+        'hero-tag-display': defaultTexts.heroTag,
+        'hero-title-display': defaultTexts.heroTitle,
+        'hero-sub-display': defaultTexts.heroSub,
+        'hero-cta-display': defaultTexts.heroCta,
+        'collection-title-display': defaultTexts.collectionTitle,
+        'footer-sub-display': defaultTexts.footerSub,
+        'upsell-name': defaultTexts.upsellName,
+        'upsell-price-display': `${defaultTexts.upsellPrice} EGP`
+    };
+    Object.entries(map).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = val;
+    });
+}
 
-// Default official products catalog from MARIO_Store_Backup
+// Default official products catalog
 const defaultProducts = [
     {
         id: 1795270536553,
@@ -85,11 +112,10 @@ const defaultProducts = [
     }
 ];
 
-// Product loading with automatic migration to real products
+// Product loading
 let products = [];
 try {
     const stored = JSON.parse(localStorage.getItem('mario_products'));
-    // If stored products are the old dummy ones (IDs 1, 2, 3), upgrade to the real catalog
     if (stored && Array.isArray(stored) && stored.length > 0 && stored[0].id !== 1) {
         products = stored;
     } else {
@@ -108,9 +134,6 @@ const i18n = {
     ar: {
         nav_store: "المتجر",
         nav_admin: "لوحة تحكم المالك",
-        hero_tag: "عطور مصممة لتدوم",
-        hero_cta: "تسوق المجموعة الآن",
-        collection_title: "مجموعة عطور MARIO",
         filter_all: "الكل",
         filter_men: "رجالي",
         filter_women: "حريمي",
@@ -126,19 +149,18 @@ const i18n = {
         btn_confirm_order: "تأكيد الطلب وإرسال الفاتورة لواتساب المتجر",
         chat_btn: "خدمة العملاء (واتساب)",
         admin_title: "لوحة تحكم المالك (Owner Dashboard)",
-        admin_sub: "منطقة محمية: تحكم كامل في المبيعات، المخزون، الأسعار، الصور، وحذف الطلبات",
+        admin_sub: "تحكم كامل بدون كود: عدّل النصوص، العطور، الأسعار، الصور، والطلبات ومزامنتها سحابياً للزوار",
         back_store: "العودة للمتجر ←",
         btn_logout: "تسجيل الخروج",
         stat_sales: "إجمالي المبيعات",
         stat_orders: "عدد الطلبات",
         stat_stock: "إجمالي الزجاجات بالمخزن",
-        ui_customizer_title: "إعدادات المتجر، الواتساب والمحفظة",
+        ui_customizer_title: "تعديل نصوص الموقع، الواتساب والمحفظة (بدون كود)",
         lbl_owner_whatsapp: "📱 رقم واتساب المالك لاستقبال الطلبات وخدمة العملاء",
         lbl_owner_pass: "تغيير كلمة مرور المالك (Owner Password)",
         lbl_vf_wallet: "رقم محفظة الدفع الإلكتروني كاش (Cash Wallet)",
-        lbl_hero_title: "عنوان البنر الرئيسي (عربي)",
         lbl_accent_color: "لون هوية البراند (Accent Color)",
-        btn_save_ui: "حفظ الإعدادات والتعديلات",
+        btn_save_ui: "حفظ ونشر جميع النصوص والإعدادات",
         add_product_title: "إضافة عطر جديد للمتجر",
         btn_add_perfume: "إضافة العطر",
         orders_list_title: "الطلبات الواردة من الزبائن (خانة المالك)",
@@ -150,9 +172,6 @@ const i18n = {
     en: {
         nav_store: "Store",
         nav_admin: "Owner Dashboard",
-        hero_tag: "SCENTS CRAFTED TO LAST",
-        hero_cta: "Shop Collection",
-        collection_title: "MARIO Signature Collection",
         filter_all: "All",
         filter_men: "Men",
         filter_women: "Women",
@@ -168,19 +187,18 @@ const i18n = {
         btn_confirm_order: "Confirm Order & Send to Store WhatsApp",
         chat_btn: "WhatsApp Support",
         admin_title: "Owner Dashboard",
-        admin_sub: "Protected Zone: Full control over sales, inventory, prices, photos, and orders deletion",
+        admin_sub: "Full No-Code Control & Live Cloud Sync for all visitors",
         back_store: "← Back to Store",
         btn_logout: "Logout",
         stat_sales: "Total Revenue",
         stat_orders: "Total Orders",
         stat_stock: "Bottles in Stock",
-        ui_customizer_title: "Storefront, WhatsApp & Wallet Settings",
+        ui_customizer_title: "Edit Website Texts, WhatsApp & Wallet (No-Code)",
         lbl_owner_whatsapp: "Owner & Support WhatsApp Number",
         lbl_owner_pass: "Change Owner Password",
         lbl_vf_wallet: "Cash Wallet Number",
-        lbl_hero_title: "Main Hero Headline",
         lbl_accent_color: "Brand Accent Color",
-        btn_save_ui: "Save Settings & Changes",
+        btn_save_ui: "Save & Publish All Texts & Settings",
         add_product_title: "Add New Perfume",
         btn_add_perfume: "Add Perfume",
         orders_list_title: "Incoming Customer Orders (Owner Box)",
@@ -258,7 +276,7 @@ function handleAdminLogin(e) {
         }
         if (input) {
             input.classList.remove('shake-input');
-            void input.offsetWidth; // Trigger reflow
+            void input.offsetWidth;
             input.classList.add('shake-input');
             input.focus();
         }
@@ -310,7 +328,7 @@ function renderProducts(filter = 'all') {
             ? `<img src="${product.image}" alt="${name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">`
             : `<div class="w-20 h-28 border-2 border-[#D4AF37]/70 rounded-t-lg rounded-b-md flex flex-col items-center justify-center bg-black/50 backdrop-blur-sm shadow-2xl group-hover:scale-105 transition">
                    <div class="w-6 h-4 bg-[#D4AF37] -mt-6 mb-3 rounded-t-sm"></div>
-                   <span class="brand-font text-xs tracking-widest gold-text font-bold">MARIO</span>
+                   <span class="brand-font text-xs tracking-widest gold-text font-bold">${defaultTexts.brandLogo}</span>
                    <span class="text-[9px] text-zinc-400 mt-1">${product.size || '100ml'}</span>
                </div>`;
 
@@ -379,7 +397,7 @@ function addUpsellToCart() {
     if (existing) {
         existing.qty += 1;
     } else {
-        cart.push({ id: 999, name_ar: "عينة استكشاف MARIO (15ml)", name_en: "MARIO Discovery Sample (15ml)", price: 150, qty: 1 });
+        cart.push({ id: 999, name_ar: defaultTexts.upsellName, name_en: defaultTexts.upsellName, price: defaultTexts.upsellPrice, qty: 1 });
     }
     saveAndRenderCart();
 }
@@ -440,7 +458,7 @@ function toggleCart(forceOpen = false) {
     else drawer.classList.toggle('hidden');
 }
 
-// Checkout and Submit Order: Records in Owner Dashboard + Forwards to WhatsApp (01284955769)
+// Checkout and Submit Order
 function submitOrder(e) {
     e.preventDefault();
     if (cart.length === 0) {
@@ -489,14 +507,13 @@ function submitOrder(e) {
         if (prod) prod.stock = Math.max(0, prod.stock - item.qty);
     });
 
-    // 1. Record into Owner Dashboard
     orders.unshift(newOrder);
     localStorage.setItem('mario_orders', JSON.stringify(orders));
     localStorage.setItem('mario_products', JSON.stringify(products));
+    pushStoreDataToCloud();
 
-    // 2. Prepare WhatsApp Order Message for the Store Owner (01284955769)
     const itemsDetailText = cart.map(i => `• ${i.name_ar} × ${i.qty} = ${i.price * i.qty} EGP`).join('\n');
-    const waOrderMessage = `🛍️ *طلب جديد من متجر MARIO Perfumes*
+    const waOrderMessage = `🛍️ *طلب جديد من متجر ${defaultTexts.brandLogo} Perfumes*
 ----------------------------------------
 📦 *رقم الطلب:* ${newOrder.id}
 📅 *التاريخ:* ${formattedDate}
@@ -516,7 +533,6 @@ ${itemsDetailText}
     const ownerNum = cleanWhatsAppNumber(ownerWhatsApp);
     const waUrl = `https://api.whatsapp.com/send?phone=${ownerNum}&text=${encodeURIComponent(waOrderMessage)}`;
 
-    // Reset Cart & UI
     cart = [];
     saveAndRenderCart();
     renderProducts();
@@ -525,7 +541,6 @@ ${itemsDetailText}
     e.target.reset();
     handlePaymentChange();
 
-    // 3. Directly open WhatsApp (and fallback to navigation if popup is blocked)
     const waWindow = window.open(waUrl, '_blank');
     if (!waWindow || waWindow.closed || typeof waWindow.closed === 'undefined') {
         window.location.href = waUrl;
@@ -547,7 +562,7 @@ function switchView(view) {
     if (view === 'admin') renderAdmin();
 }
 
-// Update Order Status directly from Dashboard
+// Update Order Status
 function updateOrderStatus(orderId, newStatus) {
     const order = orders.find(o => o.id === orderId);
     if (order) {
@@ -557,7 +572,7 @@ function updateOrderStatus(orderId, newStatus) {
     }
 }
 
-// Owner Feature: Delete Single Order
+// Delete Single Order
 function deleteOrder(orderId) {
     const confirmMsg = currentLang === 'ar' 
         ? `هل أنت متأكد من حذف الطلب رقم ${orderId} نهائياً؟` 
@@ -570,7 +585,7 @@ function deleteOrder(orderId) {
     renderAdmin();
 }
 
-// Owner Feature: Clear All Orders
+// Clear All Orders
 function clearAllOrders() {
     if (orders.length === 0) {
         alert(currentLang === 'ar' ? 'سجل الطلبات فارغ بالفعل!' : 'Orders log is already empty!');
@@ -589,59 +604,93 @@ function clearAllOrders() {
     alert(currentLang === 'ar' ? 'تم مسح سجل الطلبات بالكامل.' : 'All orders cleared successfully.');
 }
 
-// Message Customer on WhatsApp from Owner Dashboard
+// Message Customer on WhatsApp
 function contactCustomerWhatsApp(phone, orderId) {
     const num = cleanWhatsAppNumber(phone);
-    const msg = encodeURIComponent(`مرحباً بك من متجر MARIO للعطور! بخصوص طلبك رقم ${orderId}، نود إخبارك بأنه تم استلامه وجاري تجهيزه.`);
+    const msg = encodeURIComponent(`مرحباً بك من متجر ${defaultTexts.brandLogo} للعطور! بخصوص طلبك رقم ${orderId}، نود إخبارك بأنه تم استلامه وجاري تجهيزه.`);
     window.open(`https://api.whatsapp.com/send?phone=${num}&text=${msg}`, '_blank');
 }
 
-// Render Admin Dashboard
-function renderAdmin() {
+// Quick Inline Price & Stock Update from Products Table
+function quickUpdateProduct(id, field, value) {
+    const prod = products.find(p => p.id === id);
+    if (!prod) return;
+    const numVal = Number(value);
+    if (isNaN(numVal) || numVal < 0) return;
+    prod[field] = numVal;
+    localStorage.setItem('mario_products', JSON.stringify(products));
+    renderProducts();
+    updateDashboardStatsOnly();
+    pushStoreDataToCloud();
+}
+
+function updateDashboardStatsOnly() {
     const totalSales = orders.reduce((sum, o) => sum + o.total, 0);
     const totalStock = products.reduce((sum, p) => sum + p.stock, 0);
-
     const statSalesEl = document.getElementById('stat-total-sales');
     const statOrdersEl = document.getElementById('stat-total-orders');
     const statStockEl = document.getElementById('stat-total-stock');
     if (statSalesEl) statSalesEl.innerText = `${totalSales} EGP`;
     if (statOrdersEl) statOrdersEl.innerText = orders.length;
     if (statStockEl) statStockEl.innerText = totalStock;
+}
 
-    const heroTitleDisp = document.getElementById('hero-title-display');
-    const heroSubDisp = document.getElementById('hero-sub-display');
-    const editHeroTitle = document.getElementById('edit-hero-title');
-    const editHeroSub = document.getElementById('edit-hero-sub');
-    const editVfWallet = document.getElementById('edit-vf-wallet');
-    const editOwnerPass = document.getElementById('edit-owner-pass');
-    const editOwnerWhatsApp = document.getElementById('edit-owner-whatsapp');
+// Render Admin Dashboard
+function renderAdmin() {
+    updateDashboardStatsOnly();
+    updateCloudStatusBadge();
 
-    if (editHeroTitle && heroTitleDisp) editHeroTitle.value = heroTitleDisp.innerText;
-    if (editHeroSub && heroSubDisp) editHeroSub.value = heroSubDisp.innerText;
-    if (editVfWallet) editVfWallet.value = vfWallet;
-    if (editOwnerPass) editOwnerPass.value = ownerPassword;
-    if (editOwnerWhatsApp) editOwnerWhatsApp.value = ownerWhatsApp === '201284955769' ? '01284955769' : ownerWhatsApp;
+    const cloudInput = document.getElementById('cloud-endpoint-input');
+    if (cloudInput) cloudInput.value = cloudEndpoint;
+
+    // Populate all editable text inputs
+    const fieldMap = {
+        'edit-brand-logo': defaultTexts.brandLogo,
+        'edit-hero-tag': defaultTexts.heroTag,
+        'edit-hero-title': defaultTexts.heroTitle,
+        'edit-hero-sub': defaultTexts.heroSub,
+        'edit-hero-cta': defaultTexts.heroCta,
+        'edit-collection-title': defaultTexts.collectionTitle,
+        'edit-upsell-name': defaultTexts.upsellName,
+        'edit-upsell-price': defaultTexts.upsellPrice,
+        'edit-footer-sub': defaultTexts.footerSub,
+        'edit-vf-wallet': vfWallet,
+        'edit-owner-pass': ownerPassword,
+        'edit-owner-whatsapp': ownerWhatsApp === '201284955769' ? '01284955769' : ownerWhatsApp
+    };
+
+    Object.entries(fieldMap).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+    });
 
     updateWhatsAppLinks();
 
-    // Render Admin Products Table
+    // Render Admin Products Table with Direct Inline Price & Stock Inputs
     const prodTbody = document.getElementById('admin-products-table');
     if (prodTbody) {
         prodTbody.innerHTML = products.length ? products.map(p => `
             <tr>
                 <td class="py-3 font-bold">${p.name_ar} <span class="text-xs text-zinc-500">(${p.size || '100ml'})</span></td>
                 <td class="py-3 text-xs uppercase text-zinc-400">${p.category}</td>
-                <td class="py-3 gold-text font-bold">${p.price} EGP</td>
-                <td class="py-3">${p.stock}</td>
+                <td class="py-3">
+                    <div class="flex items-center gap-1">
+                        <input type="number" value="${p.price}" onchange="quickUpdateProduct(${p.id}, 'price', this.value)" class="w-20 bg-zinc-900 border border-zinc-700 focus:border-[#D4AF37] rounded px-2 py-1 text-xs gold-text font-bold outline-none">
+                        <span class="text-xs text-zinc-500">EGP</span>
+                    </div>
+                </td>
+                <td class="py-3">
+                    <input type="number" value="${p.stock}" onchange="quickUpdateProduct(${p.id}, 'stock', this.value)" class="w-16 bg-zinc-900 border border-zinc-700 focus:border-[#D4AF37] rounded px-2 py-1 text-xs text-white outline-none">
+                </td>
                 <td class="py-3 flex gap-2">
-                    <button onclick="editProduct(${p.id})" class="text-xs bg-zinc-800 hover:bg-zinc-700 px-2.5 py-1 rounded text-amber-300">تعديل</button>
+                    <button onclick="editProduct(${p.id})" class="text-xs bg-zinc-800 hover:bg-zinc-700 px-2.5 py-1 rounded text-amber-300">تعديل كامل</button>
                     <button onclick="deleteProduct(${p.id})" class="text-xs bg-red-950/50 hover:bg-red-900/60 px-2.5 py-1 rounded text-red-400">حذف</button>
                 </td>
             </tr>
         `).join('') : `<tr><td colspan="5" class="py-6 text-center text-zinc-500">لا توجد عطور مضافة بعد</td></tr>`;
     }
 
-    // Render Orders Table (Owner Box) with Delete and Action Controls
+    // Render Orders Table
     const tbody = document.getElementById('orders-table-body');
     if (tbody) {
         tbody.innerHTML = orders.length ? orders.map(o => `
@@ -714,7 +763,8 @@ function saveProduct(e) {
         renderProducts();
         renderAdmin();
         resetProductForm();
-        alert(editId ? 'تم تعديل العطر بنجاح!' : 'تمت إضافة العطر للمتجر بنجاح!');
+        pushStoreDataToCloud();
+        alert(editId ? 'تم تعديل العطر ونشره بنجاح!' : 'تمت إضافة العطر للمتجر ونشره بنجاح!');
     };
 
     if (fileInput && fileInput.files && fileInput.files[0]) {
@@ -765,6 +815,7 @@ function deleteProduct(id) {
     localStorage.setItem('mario_products', JSON.stringify(products));
     renderProducts();
     renderAdmin();
+    pushStoreDataToCloud();
 }
 
 // Clear Demo Products
@@ -774,6 +825,7 @@ function clearDemoProducts() {
     localStorage.setItem('mario_products', JSON.stringify(products));
     renderProducts();
     renderAdmin();
+    pushStoreDataToCloud();
 }
 
 // Export JSON Backup
@@ -782,8 +834,7 @@ function exportBackup() {
         ownerPassword,
         ownerWhatsApp,
         vfWallet,
-        heroTitle: savedHeroTitle,
-        heroSub: savedHeroSub,
+        texts: defaultTexts,
         themeColor: savedThemeColor,
         products,
         orders
@@ -801,15 +852,14 @@ function changeThemeColor(hex) {
     savedThemeColor = hex;
     localStorage.setItem('mario_theme_color', hex);
     document.documentElement.style.setProperty('--primary-gold', hex);
+    pushStoreDataToCloud();
 }
 
-// Save Storefront, WhatsApp, Security & Wallet Settings
+// Save All Storefront Texts, WhatsApp, Security & Wallet Settings (No-Code!)
 function saveStoreSettings() {
-    const newTitle = document.getElementById('edit-hero-title').value;
-    const newSub = document.getElementById('edit-hero-sub').value;
-    const newWallet = document.getElementById('edit-vf-wallet').value.trim();
-    const newPass = document.getElementById('edit-owner-pass').value.trim();
     const newWhatsApp = document.getElementById('edit-owner-whatsapp').value.trim();
+    const newPass = document.getElementById('edit-owner-pass').value.trim();
+    const newWallet = document.getElementById('edit-vf-wallet').value.trim();
 
     if (newWhatsApp) {
         ownerWhatsApp = cleanWhatsAppNumber(newWhatsApp);
@@ -820,16 +870,6 @@ function saveStoreSettings() {
         ownerPassword = newPass;
         localStorage.setItem('mario_owner_password', ownerPassword);
     }
-    if (newTitle.trim()) {
-        savedHeroTitle = newTitle;
-        localStorage.setItem('mario_hero_title', savedHeroTitle);
-        document.getElementById('hero-title-display').innerText = savedHeroTitle;
-    }
-    if (newSub.trim()) {
-        savedHeroSub = newSub;
-        localStorage.setItem('mario_hero_sub', savedHeroSub);
-        document.getElementById('hero-sub-display').innerText = savedHeroSub;
-    }
     if (newWallet) {
         vfWallet = newWallet;
         localStorage.setItem('mario_vf_wallet', vfWallet);
@@ -837,11 +877,40 @@ function saveStoreSettings() {
         if (vfDisp) vfDisp.innerText = vfWallet;
     }
 
+    // Save all editable website texts
+    const textInputs = [
+        { id: 'edit-brand-logo', key: 'brandLogo', storage: 'mario_brand_logo' },
+        { id: 'edit-hero-tag', key: 'heroTag', storage: 'mario_hero_tag' },
+        { id: 'edit-hero-title', key: 'heroTitle', storage: 'mario_hero_title' },
+        { id: 'edit-hero-sub', key: 'heroSub', storage: 'mario_hero_sub' },
+        { id: 'edit-hero-cta', key: 'heroCta', storage: 'mario_hero_cta' },
+        { id: 'edit-collection-title', key: 'collectionTitle', storage: 'mario_collection_title' },
+        { id: 'edit-upsell-name', key: 'upsellName', storage: 'mario_upsell_name' },
+        { id: 'edit-footer-sub', key: 'footerSub', storage: 'mario_footer_sub' }
+    ];
+
+    textInputs.forEach(item => {
+        const el = document.getElementById(item.id);
+        if (el && el.value.trim()) {
+            defaultTexts[item.key] = el.value.trim();
+            localStorage.setItem(item.storage, defaultTexts[item.key]);
+        }
+    });
+
+    const upsellPriceEl = document.getElementById('edit-upsell-price');
+    if (upsellPriceEl && upsellPriceEl.value !== '') {
+        defaultTexts.upsellPrice = Number(upsellPriceEl.value);
+        localStorage.setItem('mario_upsell_price', defaultTexts.upsellPrice);
+    }
+
+    applyCustomTexts();
     updateWhatsAppLinks();
-    alert(currentLang === 'ar' ? 'تم حفظ الإعدادات، رقم الواتساب، كلمة المرور ورقم المحفظة بنجاح!' : 'Settings, WhatsApp number, Owner password, and Wallet saved successfully!');
+    renderProducts();
+    pushStoreDataToCloud();
+    alert(currentLang === 'ar' ? 'تم حفظ جميع النصوص والإعدادات ومزامنتها بنجاح!' : 'All texts and settings saved & synced successfully!');
 }
 
-// Import JSON Backup from file (e.g. MARIO_Store_Backup.json)
+// Import JSON Backup
 function importBackup(e) {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
@@ -854,17 +923,26 @@ function importBackup(e) {
                 products = data.products;
                 localStorage.setItem('mario_products', JSON.stringify(products));
             }
-            if (data.heroTitle) {
-                savedHeroTitle = data.heroTitle;
-                localStorage.setItem('mario_hero_title', savedHeroTitle);
-                const el = document.getElementById('hero-title-display');
-                if (el) el.innerText = savedHeroTitle;
-            }
-            if (data.heroSub) {
-                savedHeroSub = data.heroSub;
-                localStorage.setItem('mario_hero_sub', savedHeroSub);
-                const el = document.getElementById('hero-sub-display');
-                if (el) el.innerText = savedHeroSub;
+            if (data.texts) {
+                Object.assign(defaultTexts, data.texts);
+                localStorage.setItem('mario_brand_logo', defaultTexts.brandLogo);
+                localStorage.setItem('mario_hero_tag', defaultTexts.heroTag);
+                localStorage.setItem('mario_hero_title', defaultTexts.heroTitle);
+                localStorage.setItem('mario_hero_sub', defaultTexts.heroSub);
+                localStorage.setItem('mario_hero_cta', defaultTexts.heroCta);
+                localStorage.setItem('mario_collection_title', defaultTexts.collectionTitle);
+                localStorage.setItem('mario_footer_sub', defaultTexts.footerSub);
+                localStorage.setItem('mario_upsell_name', defaultTexts.upsellName);
+                localStorage.setItem('mario_upsell_price', defaultTexts.upsellPrice);
+            } else {
+                if (data.heroTitle) {
+                    defaultTexts.heroTitle = data.heroTitle;
+                    localStorage.setItem('mario_hero_title', defaultTexts.heroTitle);
+                }
+                if (data.heroSub) {
+                    defaultTexts.heroSub = data.heroSub;
+                    localStorage.setItem('mario_hero_sub', defaultTexts.heroSub);
+                }
             }
             if (data.themeColor) {
                 changeThemeColor(data.themeColor);
@@ -877,10 +955,11 @@ function importBackup(e) {
                 orders = data.orders;
                 localStorage.setItem('mario_orders', JSON.stringify(orders));
             }
+            applyCustomTexts();
             renderProducts();
             if (isOwnerAuthenticated()) renderAdmin();
-            pushProductsToCloud();
-            alert('تم استيراد جميع المنتجات والإعدادات من الملف بنجاح!');
+            pushStoreDataToCloud();
+            alert('تم استيراد جميع المنتجات والنصوص والإعدادات ومزامنتها بنجاح!');
         } catch (err) {
             alert('عفواً، الملف الذي اخترته غير صالح أو به خطأ في التنسيق.');
         }
@@ -889,28 +968,46 @@ function importBackup(e) {
     e.target.value = '';
 }
 
-// Copy Updated Products Code for script.js
+// Copy Updated Full Store Code (Texts + Products) for Static Hosting
 function copyProductsCode() {
-    const code = `const defaultProducts = ${JSON.stringify(products, null, 2)};`;
+    const code = `// Copy & Paste into script.js to make changes permanent without cloud
+const defaultTexts = ${JSON.stringify(defaultTexts, null, 2)};
+
+const defaultProducts = ${JSON.stringify(products, null, 2)};`;
     navigator.clipboard.writeText(code).then(() => {
-        alert('تم نسخ كود المنتجات الحالي إلى الحافظة!\nيمكنك لصقه في ملف script.js في أي وقت.');
+        alert('تم نسخ كود النصوص والمنتجات الحالي بالكامل إلى الحافظة!\nيمكنك لصقه في ملف script.js في أي وقت.');
     }).catch(() => {
-        prompt('انسخ كود المنتجات يدوياً:', code);
+        prompt('انسخ الكود يدوياً:', code);
     });
 }
 
-// Cloud Sync Functions
+// ==========================================
+// CLOUD SYNC SYSTEM (FIREBASE REALTIME DB)
+// ==========================================
+function formatFirebaseUrl(rawUrl) {
+    let url = (rawUrl || '').trim();
+    if (!url) return '';
+    if (url.endsWith('/')) url = url.slice(0, -1);
+    if (!url.endsWith('.json')) {
+        url += '/mario_store_data.json';
+    }
+    return url;
+}
+
 function saveCloudEndpoint() {
     const input = document.getElementById('cloud-endpoint-input');
-    const url = input ? input.value.trim() : '';
-    cloudEndpoint = url;
-    localStorage.setItem('mario_cloud_endpoint', url);
+    const rawUrl = input ? input.value.trim() : '';
+    const formattedUrl = formatFirebaseUrl(rawUrl);
+
+    cloudEndpoint = formattedUrl;
+    localStorage.setItem('mario_cloud_endpoint', formattedUrl);
+    if (input) input.value = formattedUrl;
     updateCloudStatusBadge();
-    if (url) {
-        alert('تم حفظ رابط السحابة بنجاح! جاري رفع المنتجات الحالية للسحابة...');
-        pushProductsToCloud(true);
+
+    if (formattedUrl) {
+        pushStoreDataToCloud(true);
     } else {
-        alert('تم إلغاء تفعيل السحابة والعودة للتخزين المحلي.');
+        alert('تم فصل المزامنة السحابية والعودة للتخزين المحلي فقط.');
     }
 }
 
@@ -918,44 +1015,92 @@ function updateCloudStatusBadge() {
     const badge = document.getElementById('cloud-sync-status');
     if (!badge) return;
     if (cloudEndpoint) {
-        badge.className = 'text-xs px-3 py-1 rounded-full border border-emerald-600 bg-emerald-950/60 text-emerald-300 flex items-center gap-1';
-        badge.innerHTML = '<span>🟢</span> <span>متصل بالسحابة (Realtime Active)</span>';
+        badge.className = 'text-xs px-3 py-1 rounded-full border border-emerald-600 bg-emerald-950/60 text-emerald-300 flex items-center gap-1.5';
+        badge.innerHTML = '<span>🟢</span> <span>متصل بالسحابة (يظهر للزوار فوراً)</span>';
     } else {
-        badge.className = 'text-xs px-3 py-1 rounded-full border border-zinc-700 bg-zinc-900 text-zinc-400';
-        badge.innerHTML = '<span>⚪</span> <span>وضع التخزين المحلي (Offline / Local)</span>';
+        badge.className = 'text-xs px-3 py-1 rounded-full border border-zinc-700 bg-zinc-900 text-zinc-400 flex items-center gap-1.5';
+        badge.innerHTML = '<span>⚪</span> <span>غير متصل بالسحابة (تخزين محلي فقط)</span>';
     }
 }
 
-function pushProductsToCloud(showAlert = false) {
+// Push all store data (products + texts + theme + wallet + whatsapp) to cloud
+function pushStoreDataToCloud(showAlert = false) {
     if (!cloudEndpoint) return;
+    const payload = {
+        products: products,
+        texts: defaultTexts,
+        themeColor: savedThemeColor,
+        vfWallet: vfWallet,
+        ownerWhatsApp: ownerWhatsApp,
+        updatedAt: new Date().toISOString()
+    };
+
     fetch(cloudEndpoint, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(products)
+        body: JSON.stringify(payload)
     })
     .then(res => {
         if (!res.ok) throw new Error('HTTP ' + res.status);
-        if (showAlert) alert('تم رفع المنتجات إلى السحابة بنجاح! ستظهر الآن لجميع الزوار فوراً.');
+        if (showAlert) alert('✅ تم الربط والمزامنة مع السحابة بنجاح! أي تعديل تعمله الآن سيظهر لكل الزوار فوراً.');
     })
     .catch(err => {
         console.error('Cloud Sync Error:', err);
-        if (showAlert) alert('تعذر الرفع للسحابة. يرجى التأكد من صحة الرابط وأذونات القراءة/الكتابة.');
+        if (showAlert) alert('❌ تعذر الاتصال بالسحابة. تأكد من صحة رابط Firebase وأن قواعد القراءة والكتابة (Rules) مفعلة على true.');
     });
 }
 
-function fetchProductsFromCloud() {
+// Fetch live store data from cloud for visitors
+function fetchStoreDataFromCloud(showAlert = false) {
     if (!cloudEndpoint) return;
     fetch(cloudEndpoint)
         .then(res => res.json())
         .then(data => {
-            if (data && Array.isArray(data) && data.length > 0) {
+            if (!data) return;
+            // Support both legacy array format and full store object format
+            if (Array.isArray(data) && data.length > 0) {
                 products = data;
                 localStorage.setItem('mario_products', JSON.stringify(products));
-                renderProducts();
-                if (isOwnerAuthenticated()) renderAdmin();
+            } else if (typeof data === 'object') {
+                if (data.products && Array.isArray(data.products)) {
+                    products = data.products;
+                    localStorage.setItem('mario_products', JSON.stringify(products));
+                }
+                if (data.texts) {
+                    Object.assign(defaultTexts, data.texts);
+                    localStorage.setItem('mario_brand_logo', defaultTexts.brandLogo);
+                    localStorage.setItem('mario_hero_tag', defaultTexts.heroTag);
+                    localStorage.setItem('mario_hero_title', defaultTexts.heroTitle);
+                    localStorage.setItem('mario_hero_sub', defaultTexts.heroSub);
+                    localStorage.setItem('mario_hero_cta', defaultTexts.heroCta);
+                    localStorage.setItem('mario_collection_title', defaultTexts.collectionTitle);
+                    localStorage.setItem('mario_footer_sub', defaultTexts.footerSub);
+                    localStorage.setItem('mario_upsell_name', defaultTexts.upsellName);
+                    localStorage.setItem('mario_upsell_price', defaultTexts.upsellPrice);
+                }
+                if (data.themeColor) {
+                    savedThemeColor = data.themeColor;
+                    localStorage.setItem('mario_theme_color', savedThemeColor);
+                }
+                if (data.vfWallet) {
+                    vfWallet = data.vfWallet;
+                    localStorage.setItem('mario_vf_wallet', vfWallet);
+                }
+                if (data.ownerWhatsApp) {
+                    ownerWhatsApp = data.ownerWhatsApp;
+                    localStorage.setItem('mario_owner_whatsapp', ownerWhatsApp);
+                }
             }
+            applyCustomTexts();
+            updateWhatsAppLinks();
+            renderProducts();
+            if (isOwnerAuthenticated()) renderAdmin();
+            if (showAlert) alert('✅ تم سحب أحدث البيانات من السحابة بنجاح!');
         })
-        .catch(err => console.log('Offline or Cloud Fetch Error, using local products.', err));
+        .catch(err => {
+            console.log('Offline or Cloud Fetch Error, using local data.', err);
+            if (showAlert) alert('❌ تعذر سحب البيانات من السحابة. تأكد من الاتصال بالإنترنت وصحة الرابط.');
+        });
 }
 
 // Multi-language Toggle (Arabic / English)
@@ -973,14 +1118,19 @@ function toggleLanguage() {
         }
     });
 
-    const heroTitleDisplay = document.getElementById('hero-title-display');
-    const heroSubDisplay = document.getElementById('hero-sub-display');
     if (currentLang === 'en') {
-        if (heroTitleDisplay) heroTitleDisplay.innerText = "Discover Your Signature Scent with MARIO";
-        if (heroSubDisplay) heroSubDisplay.innerText = "Unique long-lasting luxury fragrances delivered to your doorstep with Cash on Delivery or Mobile Cash.";
+        const heroTagEl = document.getElementById('hero-tag-display');
+        const heroTitleEl = document.getElementById('hero-title-display');
+        const heroSubEl = document.getElementById('hero-sub-display');
+        const heroCtaEl = document.getElementById('hero-cta-display');
+        const colTitleEl = document.getElementById('collection-title-display');
+        if (heroTagEl) heroTagEl.innerText = "SCENTS CRAFTED TO LAST";
+        if (heroTitleEl) heroTitleEl.innerText = `Discover Your Signature Scent with ${defaultTexts.brandLogo}`;
+        if (heroSubEl) heroSubEl.innerText = "Unique long-lasting luxury fragrances delivered to your doorstep with Cash on Delivery or Mobile Cash.";
+        if (heroCtaEl) heroCtaEl.innerText = "Shop Collection";
+        if (colTitleEl) colTitleEl.innerText = `${defaultTexts.brandLogo} Signature Collection`;
     } else {
-        if (heroTitleDisplay) heroTitleDisplay.innerText = savedHeroTitle;
-        if (heroSubDisplay) heroSubDisplay.innerText = savedHeroSub;
+        applyCustomTexts();
     }
 
     updateWhatsAppLinks();
@@ -990,9 +1140,10 @@ function toggleLanguage() {
 
 // Initial Boot
 document.addEventListener('DOMContentLoaded', () => {
+    applyCustomTexts();
     updateWhatsAppLinks();
     renderProducts();
     saveAndRenderCart();
     handlePaymentChange();
-    fetchProductsFromCloud();
+    fetchStoreDataFromCloud();
 });
